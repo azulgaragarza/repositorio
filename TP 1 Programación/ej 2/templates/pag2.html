@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head style="background-color:black">
+        <style>
+            tr,td {
+            align-content: center;
+            padding-top: 15px;
+            padding-bottom: 15px;
+            padding-right:70px;
+            padding-left: 70px;
+            border: 1px solid darkorchid;
+            border-collapse: collapse;
+            }
+            button{
+            border:1px solid darkorchid;
+            border-style: double;
+            color:darkorchid;
+            align-content: center;
+            background-color: black;
+            padding: 16px 200px;
+            cursor: pointer;
+            }
+        </style>
+    </head>
+    <body style="background-color:black">
+        <table width="100%">
+            <tr style="color:white;font-size:90%;font-family:arial;">
+                <td style="width:50%">
+                    {% if contador<5: %}
+                        <p>{{ mensaje }}</p>
+                        <button class="button" onclick="location.href='/pag1'">Pasar a la siguiente pelicula</button>
+                    {% endif %}
+                    {% if contador==5: %}
+                        <p>{{ mensaje }}</p>
+                        <button class="button" onclick="location.href='/'">Volver al inicio</button>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>
