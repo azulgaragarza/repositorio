@@ -1,5 +1,5 @@
 def crear_lista(listaEntera,listaP,listaP2):
-    ruta="D:\\Azul\\TP 1 Programación\\ej 2\\apps\\frases_de_peliculas.txt"
+    ruta="D:\\Azul\\repositorio\\TP 1 Programación\\ej 2\\apps\\frases_de_peliculas.txt"
     with open(ruta) as archi:
         linea=archi.readlines()
         for i in linea:
@@ -32,16 +32,24 @@ def guardar_nombre_en_archivo(nombre):
     import datetime
     with open("nombres.txt", "a", encoding="UTF-8") as archi:
         fecha=datetime.datetime.now()
-        archi.write(str(nombre)+" "+str(fecha)+"\n")
+        archi.write(str(nombre)+" "+str(fecha))
 
-def escribir_mensaje(Respuesta,Correcta):
+def escribir_mensaje(Respuesta,Correcta,intentos):
     with open("mensaje.txt","w") as mensaje:
+        suma=0
         if Respuesta==Correcta:
             mens="Respuesta correcta :)"
-            mensaje.write(mens)
+            mensaje.write(mens+"\n")
+            intentos.append(1)
         else:
             mens="Respuesta incorrecta :("
-            mensaje.write(mens)
+            mensaje.write(mens+"\n")
+            intentos.append(0)
+        if len(intentos)==5:
+            for x in intentos:
+                suma=suma+x
+        mensaje.write(str(suma))
+
         
 
 
