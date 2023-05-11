@@ -3,6 +3,8 @@ from module.funciones import *
 app = Flask(__name__)
 contador=0
 intentos=[]
+listaPrueba=[]
+Comparacion=[]
 
 @app.route("/", methods=['GET','POST'])
 def home():
@@ -10,6 +12,8 @@ def home():
         contador=0
         global intentos
         intentos=[]
+        global listaPrueba
+        listaPrueba=[]
         if request.method == 'POST':
               nombre=request.form["nombre"]
               guardar_nombre_en_archivo(nombre)
@@ -19,11 +23,22 @@ def home():
 @app.route("/pag1", methods=['GET','POST'])
 def pag1():
       global intentos
-      listaEntera=[] #tiene frases y pelis
-      listaP=[] #tiene solo pelis
-      listaP2=[] #tiene pelis con indice y ordenadas
-      crear_lista(listaEntera,listaP,listaP2)
-      matriz=pelis_frase(listaEntera)
+      global listaPrueba
+      global Comparacion
+      if len(listaPrueba)==0:
+            listaEntera=[] #tiene frases y pelis
+            crear_lista(listaEntera)
+            matriz=pelis_frase(listaEntera)
+      else:
+            listaEntera=[] #tiene frases y pelis
+            crear_lista(listaEntera)
+            matriz=pelis_frase(listaEntera)
+            for i in listaPrueba:
+                  while i==matriz[3]:
+                        listaEntera=[] #tiene frases y pelis
+                        crear_lista(listaEntera)
+                        matriz=pelis_frase(listaEntera)
+      Comparacion=matriz[3]
       if request.method == 'POST' :
             Respuesta=request.form["valor-boton"]
             Correcta=request.form["valor-boton2"]
@@ -33,7 +48,10 @@ def pag1():
 
 @app.route("/pag2")
 def pag2():
+      global listaPrueba
       global contador
+      global Comparacion
+      listaPrueba.append(Comparacion)
       contador=contador+1
       mensj=[]
       with open("mensaje.txt") as m:

@@ -1,16 +1,10 @@
-def crear_lista(listaEntera,listaP,listaP2):
+def crear_lista(listaEntera):
     ruta="D:\\Azul\\repositorio\\TP 1 Programación\\ej 2\\apps\\frases_de_peliculas.txt"
     with open(ruta) as archi:
         linea=archi.readlines()
         for i in linea:
             listaEntera.append(i.strip().split(";"))
-    for x in listaEntera:
-        listaP.append(x[1])
-    listaP.sort()
-    for z in range(len(listaP)):
-        m=[z+1,listaP[z]]
-        listaP2.append(m)
-    return listaEntera,listaP,listaP2
+    return listaEntera
  
 def pelis_frase(listaEntera):
     import random
@@ -18,8 +12,12 @@ def pelis_frase(listaEntera):
     PeliCorrecta=listaEntera[Num][1]
     Frase=listaEntera[Num][0] 
     Num2=random.randint(0,len(listaEntera)-1)
+    while Num2==Num:
+        Num2=random.randint(0,len(listaEntera)-1)
     Peli2=listaEntera[Num2][1]
-    Num3=random.randint(0,len(listaEntera)-1) 
+    Num3=random.randint(0,len(listaEntera)-1)
+    while Num3==Num or Num3==Num2:
+        Num3=random.randint(0,len(listaEntera)-1) 
     Peli3=listaEntera[Num3][1]     
     matriz=[PeliCorrecta, Peli2, Peli3]
     random.shuffle(matriz) #mezcla las respuestas para que la opcion correcta no sea siempre la misma
