@@ -1,5 +1,5 @@
 def crear_lista(listaEntera):
-    ruta="D:\\Azul\\repositorio\\TP 1 Programación\\ej 2\\apps\\frases_de_peliculas.txt"
+    ruta="D:\\Azul\\repositorio\\TP 1 Programación\\ej 2\\frases_de_peliculas.txt"
     with open(ruta) as archi:
         linea=archi.readlines()
         for i in linea:

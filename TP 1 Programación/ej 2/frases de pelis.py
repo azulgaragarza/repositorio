@@ -29,7 +29,18 @@ def opcionE(x):
 listaEntera=[] #tiene frases y pelis
 listaP=[] #tiene solo pelis
 listaP2=[] #tiene pelis con indice y ordenadas
-crear_lista(listaEntera,listaP,listaP2) #abre el archivo y crea las listas
+
+with open("D:\\Azul\\repositorio\\TP 1 Programación\\ej 2\\frases_de_peliculas.txt") as archi:
+    linea=archi.readlines()
+    for i in linea:
+        listaEntera.append(i.strip().split(";"))
+for x in listaEntera:
+    listaP.append(x[1])
+listaP.sort()
+for z in range(len(listaP)):
+    m=[z+1,listaP[z]]
+    listaP2.append(m)
+
 while opcion!="5":
     if opcion=="1":
         print(listaP2)
