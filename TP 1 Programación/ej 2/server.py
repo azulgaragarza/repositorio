@@ -54,7 +54,7 @@ def pag2():
       listaPrueba.append(Comparacion)
       contador=contador+1 #cuenta los intentos que se van jugando
       mensj=[]
-      with open("mensaje.txt") as m:
+      with open("D:\\Azul\\repositorio\\TP 1 Programación\\ej 2\\mensaje.txt") as m:
             linea=m.readlines()
             for msj in linea:
                  mensj.append(msj) 
@@ -65,14 +65,14 @@ def pag2():
 def resultados():
       lista_participantes=[]
       mensj=[]
-      with open("mensaje.txt") as m:
+      with open("D:\\Azul\\repositorio\\TP 1 Programación\\ej 2\\mensaje.txt") as m:
             linea=m.readlines()
             for msj in linea:
                  mensj.append(msj)
             resultados=mensj[1]
-      with open("nombres.txt","a") as n:
+      with open("D:\\Azul\\repositorio\\TP 1 Programación\\ej 2\\nombres.txt","a") as n:
             n.write(" "+str(resultados)+"\n")
-      with open("nombres.txt") as f:
+      with open("D:\\Azul\\repositorio\\TP 1 Programación\\ej 2\\nombres.txt") as f:
             linea=f.readlines()
       for i in linea:
             lista_participantes.append(i.strip().split(" "))
