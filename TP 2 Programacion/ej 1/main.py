@@ -18,19 +18,44 @@ class Persona:
 
 class Estudiante(Persona):
     def __init__(self):
+        self.__legajo="legajo"
         self._curso=Curso()
+        super().__init__()
     def agregar_estudiante(self):
+        pass
+    #def 
 
 
 class Curso():
-    pass
-
+    def __init__(self):
+        self._nombre_curso="Nombre del curso"
+        #self._estudiante=Estudiante()
+        self._carga_horaria="Carga horaria"
     
+    
+class Profesor(Persona):
+    def __init__(self):
+
+        super().__init__()
+        pass
+
+class Facultad():
+    def __init__(self):
+        self._nombre_facultad="Nombre de la facultad"
+        pass
+
+class Departamento():
+    def __init__(self):
+        pass
 
 una_persona=Persona()
-una_persona.set_nombre("Azul")
-una_persona.set_edad(19)
-una_persona.set_dni(45805883)
-print(una_persona.get_nombre())
-print(una_persona.get_edad())
-print(una_persona.get_dni())
+un_estudiante=Estudiante() #instancias de las clases (objetos)
+un_profesor=Profesor()
+
+print(un_estudiante._nombre)
+#una_persona.set_nombre("Azul")
+#una_persona.set_edad(19) 
+#una_persona.set_dni(45805883)
+#print(una_persona.get_nombre())
+#print(una_persona.get_edad())
+#print(una_persona.get_dni())

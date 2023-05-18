@@ -3,7 +3,7 @@ from module.funciones import *
 app = Flask(__name__)
 contador=0
 intentos=[]
-listaPrueba=[]
+listaPrueba=[] #lista que guarda las frases en cada intento
 Comparacion=[]
 
 @app.route("/", methods=['GET','POST'])
@@ -13,7 +13,7 @@ def home():
         global intentos
         intentos=[]
         global listaPrueba
-        listaPrueba=[]
+        listaPrueba=[] #se vuelven las variables a cero y las listas a vacias
         if request.method == 'POST':
               nombre=request.form["nombre"]
               guardar_nombre_en_archivo(nombre)
@@ -38,7 +38,7 @@ def pag1():
                         listaEntera=[] #tiene frases y pelis
                         crear_lista(listaEntera)
                         matriz=pelis_frase(listaEntera)
-      Comparacion=matriz[3]
+      Comparacion=matriz[3] #guarda la frase utilizada
       if request.method == 'POST' :
             Respuesta=request.form["valor-boton"]
             Correcta=request.form["valor-boton2"]
@@ -52,7 +52,7 @@ def pag2():
       global contador
       global Comparacion
       listaPrueba.append(Comparacion)
-      contador=contador+1
+      contador=contador+1 #cuenta los intentos que se van jugando
       mensj=[]
       with open("mensaje.txt") as m:
             linea=m.readlines()
