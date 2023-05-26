@@ -2,11 +2,8 @@ class Persona:
     def __init__(self,nom,dni):
         self.nombre=nom
         self.dni=dni
-        #self.edad=edad    
     def get_nombre(self):
         return self.nombre
-    #def get_edad(self):
-        return self.edad
     def get_dni(self):
         return self.dni
 
@@ -15,11 +12,9 @@ class Estudiante(Persona):
     def __init__(self, nom, dni):
         super().__init__(nom, dni)
         self.legajo="legajo"
-        #self.curso=Curso()
         
     def obtener_informacion(self):
         return f"Nombre: {self.nombre}, DNI: {self.dni}"    
-
 
 
 class Curso():
@@ -27,10 +22,15 @@ class Curso():
         self.nombre_curso= nombre_curso
         self.carga_horaria= carga_horaria
         self.cursos=[]
+        self.alumnos=[]
     
-    def listar_curso(self, curso):
-        self.cursos.append(curso)
+    def listar_curso(self):
+        self.cursos.append(self)
     
+    def incribir_alumno(self,alumno):
+        self.alumnos.append(alumno)
+    
+
     def asignar_profesor(self,profesor):
         if self in self.cursos:
             self.profesor_curso=profesor.nombre
@@ -41,6 +41,9 @@ class Curso():
             print("Nombre del curso:", self.nombre_curso)
             print("Carga horaria:", self.carga_horaria)
             print("Profesor:", self.profesor_curso)
+            print("Alumnos inscriptos:")
+            for alumno in self.alumnos:
+                print(f"{alumno.nombre}, Dni: {alumno.dni}")
     
 
 class Facultad():
@@ -66,8 +69,7 @@ class Facultad():
 class Profesor(Persona):
     def __init__(self, nom, dni):
         super().__init__(nom, dni)
-        #self.nombre_profesor=nom
-        #self.dni_profesor=dni
+       
 
 class Departamento():
     def __init__(self,nombre):
@@ -119,13 +121,18 @@ print()
 curso1 = Curso("Matemáticas", 60)
 curso2 = Curso("Inglés", 45)
 
-curso1.listar_curso(curso1)
-curso2.listar_curso(curso2)
+curso1.listar_curso()
+curso2.listar_curso()
+
+curso1.incribir_alumno(estudiante1)
+curso1.incribir_alumno(estudiante3)
+curso2.incribir_alumno(estudiante2)
 
 curso1.asignar_profesor(profesor3)
 curso2.asignar_profesor(profesor4)
 
 curso1.devolver_curso()
+print()
 curso2.devolver_curso()
 print()
 
