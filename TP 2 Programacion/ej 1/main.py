@@ -34,13 +34,13 @@ class Curso():
     def asignar_profesor(self,profesor):
         if self in self.cursos:
             self.profesor_curso=profesor.nombre_profesor
-        #return print(f"El profesor asignado a {self.nombre_curso} es: {profesor.nombre_profesor}")
-    
+        pass
+
     def devolver_curso(self):
-        for curso in self.cursos:
-            print("Nombre del curso:", curso.nombre_curso)
-            print("Carga horaria:", curso.carga_horaria)
-            print("Profesor:", curso.profesor_curso)
+        if self in self.cursos:
+            print("Nombre del curso:", self.nombre_curso)
+            print("Carga horaria:", self.carga_horaria)
+            print("Profesor:", self.profesor_curso)
     
 
 class Facultad():
@@ -99,7 +99,7 @@ estudiante1 = Estudiante("Sol", 44442844)
 estudiante2 = Estudiante("Cielo", 44342844)
 estudiante3 = Estudiante("Nube", 45442844)
 
-#Instancias de la clase Profesor
+# Instancias de la clase Profesor
 profesor1=Profesor("Hugo",25806994)
 profesor2=Profesor("Graciela", 26705664)
 profesor3=Profesor("Liliana", 28490568)
@@ -130,7 +130,7 @@ curso2.devolver_curso()
 print()
 
 
-#Instancias de la clase Departamento
+# Instancias de la clase Departamento
 departamento1=Departamento("Fisica")
 departamento1.agregar_profesores(profesor1)
 departamento1.agregar_profesores(profesor2)
