@@ -1,74 +1,140 @@
 class Persona:
     def __init__(self,nom,dni):
-        self._nombre=nom
-        self._dni=dni
-        self._edad="edad"
-    #def set_nombre(self, name): 
-        #self._nombre = name     
+        self.nombre=nom
+        self.dni=dni
+        #self.edad=edad    
     def get_nombre(self):
-        return self._nombre
-    #def set_edad(self,edad):
-        #self._edad=edad
-    def get_edad(self):
-        return self._edad
-    #def set_dni(self,dni):
-        #self._dni=dni
+        return self.nombre
+    #def get_edad(self):
+        return self.edad
     def get_dni(self):
-        return self._dni
+        return self.dni
+
 
 class Estudiante(Persona):
-    def __init__(self,nom,dni):
-        estudiantes= {
-                "nombre":nom,
-                "dni":dni
-        }
-        self._legajo="legajo"
-        self._curso=Curso()
-        super().__init__(nom,dni)
-    def agregar_estudiante(self):
-        pass
-    #def 
+    def __init__(self, nom, dni):
+        super().__init__(nom, dni)
+        self.legajo="legajo"
+        #self.curso=Curso()
+        
+    def obtener_informacion(self):
+        return f"Nombre: {self.nombre}, DNI: {self.dni}"    
+
 
 
 class Curso():
-    def __init__(self):
-        self._nombre_curso="Nombre del curso"
-        #self._estudiante=Estudiante()
-        self._carga_horaria="Carga horaria"
+    def __init__(self, nombre_curso, carga_horaria):
+        self.nombre_curso= nombre_curso
+        self.carga_horaria= carga_horaria
+        self.cursos=[]
     
+    def listar_curso(self, curso):
+        self.cursos.append(curso)
     
-class Profesor(Persona):
-    def __init__(self):
-
-        super().__init__()
-        pass
+    def asignar_profesor(self,profesor):
+        if self in self.cursos:
+            self.profesor_curso=profesor.nombre_profesor
+        #return print(f"El profesor asignado a {self.nombre_curso} es: {profesor.nombre_profesor}")
+    
+    def devolver_curso(self):
+        for curso in self.cursos:
+            print("Nombre del curso:", curso.nombre_curso)
+            print("Carga horaria:", curso.carga_horaria)
+            print("Profesor:", curso.profesor_curso)
+    
 
 class Facultad():
-    def __init__(self):
-        self._nombre_facultad="Nombre de la facultad"
-    def agregar_estudiante(self, nom, dni, estudiantes):
-        nuevo_estudiante = Estudiante(nom, dni)
-        if dni not in estudiantes:
-            estudiantes[dni] = dni
-            estudiantes[nom]= nom
+    def __init__(self, nombre):
+        if isinstance(nombre, str):
+            self.nombre_facultad = nombre
         else:
-            raise Exception("Ya esta inscripto en la facultad")
-    def devolver_estudiante(self, nom, estudiantes):
-        return estudiantes[nom]
+            raise ValueError("El nombre de la facultad está mal ingresado")
+        self.estudiantes = []
+        self.departamentos = []
+
+    def agregar_estudiantes(self, estudiante):
+        self.estudiantes.append(estudiante)
+        
+    def devolver_estudiantes(self):
+        print(f"Estudiantes en la {self.nombre_facultad}:")
+        for estudiante in self.estudiantes:
+            print(estudiante.obtener_informacion())
+    
+    def crear_departamento(self,departamento):
+        self.departamentos.append(departamento)
+
+class Profesor(Persona):
+    def __init__(self, nom, dni):
+        super().__init__(nom, dni)
+        self.nombre_profesor=nom
+        self.dni_profesor=dni
 
 class Departamento():
-    def __init__(self):
-        pass
+    def __init__(self,nombre):
+        self.nombre_departamento=nombre
+        self.profesores=[]
 
-una_persona=Persona("Naza",45552845)
-#un_estudiante=Estudiante("Naza",45552845) #instancias de las clases (objetos)
-#un_profesor=Profesor()
-UNER=Facultad()
-UNER.agregar_estudiante("Azul",45805883, estudiantes)
-print(UNER.devolver_estudiante("Azul"))
-#una_persona.set_nombre("Azul")
-#una_persona.set_edad(19) 
-#una_persona.set_dni(45805883)
-#print(una_persona.get_nombre())
-#print(una_persona.get_edad())
-#print(una_persona.get_dni())
+    def agregar_profesores(self,profesor):
+        self.profesores.append(profesor)
+
+    def devolver_profesores(self):
+        print(f"Profesores en el departamento de {self.nombre_departamento}:")
+        for profe in self.profesores:
+            print(f"Nombre: {profe.nombre_profesor}, DNI: {profe.dni_profesor}")
+
+    def asignar_director(self,profesor):
+        if profesor in self.profesores:
+            self.director=profesor
+            self.nombre_director=profesor.nombre_profesor
+        return print(f"El director de {self.nombre_departamento} es {self.nombre_director}")
+
+
+
+# Instancias de la clase Persona
+persona1= Persona("Naza", 45552845)
+print(persona1.get_dni())
+
+# Instancias de la clase Estudiante
+estudiante1 = Estudiante("Sol", 44442844)
+estudiante2 = Estudiante("Cielo", 44342844)
+estudiante3 = Estudiante("Nube", 45442844)
+
+#Instancias de la clase Profesor
+profesor1=Profesor("Hugo",25806994)
+profesor2=Profesor("Graciela", 26705664)
+profesor3=Profesor("Liliana", 28490568)
+profesor4=Profesor("Gabriela", 26345678)
+
+# Instancias de la clase Facultad 
+facultad = Facultad("UNER")
+
+facultad.agregar_estudiantes(estudiante1)
+facultad.agregar_estudiantes(estudiante2)
+facultad.agregar_estudiantes(estudiante3)
+
+facultad.devolver_estudiantes()
+print()
+
+# Instancias de la clase Curso
+curso1 = Curso("Matemáticas", 60)
+curso2 = Curso("Inglés", 45)
+
+curso1.listar_curso(curso1)
+curso2.listar_curso(curso2)
+
+curso1.asignar_profesor(profesor3)
+curso2.asignar_profesor(profesor4)
+
+curso1.devolver_curso()
+curso2.devolver_curso()
+print()
+
+
+#Instancias de la clase Departamento
+departamento1=Departamento("Fisica")
+departamento1.agregar_profesores(profesor1)
+departamento1.agregar_profesores(profesor2)
+
+departamento1.devolver_profesores()
+print()
+departamento1.asignar_director(profesor2)
