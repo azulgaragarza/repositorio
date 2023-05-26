@@ -33,7 +33,7 @@ class Curso():
     
     def asignar_profesor(self,profesor):
         if self in self.cursos:
-            self.profesor_curso=profesor.nombre_profesor
+            self.profesor_curso=profesor.nombre
         pass
 
     def devolver_curso(self):
@@ -66,8 +66,8 @@ class Facultad():
 class Profesor(Persona):
     def __init__(self, nom, dni):
         super().__init__(nom, dni)
-        self.nombre_profesor=nom
-        self.dni_profesor=dni
+        #self.nombre_profesor=nom
+        #self.dni_profesor=dni
 
 class Departamento():
     def __init__(self,nombre):
@@ -80,12 +80,12 @@ class Departamento():
     def devolver_profesores(self):
         print(f"Profesores en el departamento de {self.nombre_departamento}:")
         for profe in self.profesores:
-            print(f"Nombre: {profe.nombre_profesor}, DNI: {profe.dni_profesor}")
+            print(f"Nombre: {profe.nombre}, DNI: {profe.dni}")
 
     def asignar_director(self,profesor):
         if profesor in self.profesores:
             self.director=profesor
-            self.nombre_director=profesor.nombre_profesor
+            self.nombre_director=profesor.nombre
         return print(f"El director de {self.nombre_departamento} es {self.nombre_director}")
 
 
