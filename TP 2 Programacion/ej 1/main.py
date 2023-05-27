@@ -12,6 +12,7 @@ class Estudiante(Persona):
     def __init__(self, nom, dni):
         super().__init__(nom, dni)
         self.legajo="legajo"
+        self.cursos_inscriptos=[]
         
     def obtener_informacion(self):
         return f"Nombre: {self.nombre}, DNI: {self.dni}"    
@@ -29,11 +30,13 @@ class Curso():
     
     def incribir_alumno(self,alumno):
         self.alumnos.append(alumno)
+        alumno.cursos_inscriptos.append(self.nombre_curso) 
     
 
     def asignar_profesor(self,profesor):
         if self in self.cursos:
             self.profesor_curso=profesor.nombre
+            profesor.cursos.append(self.nombre_curso) #define como atributo de profesor los cursos en los que enseña
         pass
 
     def devolver_curso(self):
@@ -44,7 +47,7 @@ class Curso():
             print("Alumnos inscriptos:")
             for alumno in self.alumnos:
                 print(f"{alumno.nombre}, Dni: {alumno.dni}")
-    
+
 
 class Facultad():
     def __init__(self, nombre):
@@ -69,7 +72,8 @@ class Facultad():
 class Profesor(Persona):
     def __init__(self, nom, dni):
         super().__init__(nom, dni)
-       
+        self.cursos=[]
+        self.departamentos=[]
 
 class Departamento():
     def __init__(self,nombre):
@@ -78,6 +82,8 @@ class Departamento():
 
     def agregar_profesores(self,profesor):
         self.profesores.append(profesor)
+        profesor.departamentos.append(self.nombre_departamento) #define como atributo de profesor los   
+                                                                #departamentos en los que enseña
 
     def devolver_profesores(self):
         print(f"Profesores en el departamento de {self.nombre_departamento}:")
@@ -126,7 +132,7 @@ curso2.listar_curso()
 
 curso1.incribir_alumno(estudiante1)
 curso1.incribir_alumno(estudiante3)
-curso2.incribir_alumno(estudiante2)
+curso2.incribir_alumno(estudiante1)
 
 curso1.asignar_profesor(profesor3)
 curso2.asignar_profesor(profesor4)
@@ -136,6 +142,7 @@ print()
 curso2.devolver_curso()
 print()
 
+print(f"{estudiante1.nombre} asiste a los cursos: {estudiante1.cursos_inscriptos}") 
 
 # Instancias de la clase Departamento
 departamento1=Departamento("Fisica")
