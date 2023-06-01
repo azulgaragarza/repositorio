@@ -38,6 +38,18 @@ for j in listaN:
     p= ((float(j[1])-min(listaNY))/(max(listaNY)-min(listaNY)))
     listaNN.append(p)
 
+listaGP=[]
+for n in listaG:
+    p= (((float(n[1])-float(listaG[0][1]))/float(listaG[0][1]))*100)
+    listaGP.append(p)
+
+listaNP=[]
+for m in listaN:
+    p= (((float(m[1])-float(listaN[0][1]))/float(listaN[0][1]))*100)
+    listaNP.append(p)
+
+
+
 #Creo una lista que incluya los precios de Google en el primer trimestre (9o dias)
 listaG1T=[]
 for t in range(90):
@@ -63,13 +75,15 @@ print("El porcentaje de repunte de Google es de:", round(repunte, 2), "%")
 fig, axs = plt.subplots(1, 2, figsize=(10, 5))
 
 # Primera gráfica en el primer eje (Google)
-axs[0].plot(ejeX, listaGN, color='blue', linestyle='-', label='Google')
-axs[0].set_title('Series google')
+axs[0].plot(ejeX, listaGN, label="Google")
+axs[0].plot(ejeX, listaNN, label="Nike")
+axs[0].set_title('Precios normalizados entre 0 y 1')
 axs[0].grid(True)
 
 # Segunda gráfica en el segundo eje (Nike)
-axs[1].plot(ejeX, listaNN, color='red', linestyle='-', label='Nike')
-axs[1].set_title('Series Nike')
+axs[1].plot(ejeX, listaGP, label='Google')
+axs[1].plot(ejeX, listaNP, label='Nike')
+axs[1].set_title('Tasa de variacion como porcentaje del precio inicial')
 axs[1].grid(True)
 
 # Agregar leyendas

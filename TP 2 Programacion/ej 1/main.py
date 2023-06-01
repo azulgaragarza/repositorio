@@ -50,13 +50,13 @@ class Curso():
 
 
 class Facultad():
-    def __init__(self, nombre):
+    def __init__(self, nombre,nombre_depto):
         if isinstance(nombre, str):
             self.nombre_facultad = nombre
         else:
             raise ValueError("El nombre de la facultad está mal ingresado")
         self.estudiantes = []
-        self.departamentos = []
+        self.departamentos = {nombre_depto:Departamento(nombre_depto)}
 
     def agregar_estudiantes(self, estudiante):
         self.estudiantes.append(estudiante)
@@ -66,8 +66,15 @@ class Facultad():
         for estudiante in self.estudiantes:
             print(estudiante.obtener_informacion())
     
-    def crear_departamento(self,departamento):
-        self.departamentos.append(departamento)
+    def crear_departamento(self,nombre_depto):
+        self.departamentos[nombre_depto]=Departamento(nombre_depto)
+
+    def asignar_profesor_depto(self,profesor,nombre_depto):
+        self.departamentos[nombre_depto].agregar_profesor(profesor)
+
+    def asignar_director_depto(self,profesor,nombre_depto):
+        self.departamentos[nombre_depto].asignar_director(profesor)
+#desde facultad asignar estudiantes a los cursos
 
 class Profesor(Persona):
     def __init__(self, nom, dni):
@@ -80,9 +87,10 @@ class Departamento():
         self.nombre_departamento=nombre
         self.profesores=[]
 
-    def agregar_profesores(self,profesor):
+    def agregar_profesor(self,profesor):
         self.profesores.append(profesor)
-        profesor.departamentos.append(self.nombre_departamento) #define como atributo de profesor los   
+        #tiene que haber un metodo que asigne el atributo en profesor
+        #profesor.departamentos.append(self.nombre_departamento) #define como atributo de profesor los   
                                                                 #departamentos en los que enseña
 
     def devolver_profesores(self):
@@ -120,6 +128,7 @@ facultad.agregar_estudiantes(estudiante1)
 facultad.agregar_estudiantes(estudiante2)
 facultad.agregar_estudiantes(estudiante3)
 
+
 facultad.devolver_estudiantes()
 print()
 
@@ -146,8 +155,8 @@ print(f"{estudiante1.nombre} asiste a los cursos: {estudiante1.cursos_inscriptos
 
 # Instancias de la clase Departamento
 departamento1=Departamento("Fisica")
-departamento1.agregar_profesores(profesor1)
-departamento1.agregar_profesores(profesor2)
+departamento1.agregar_profesor(profesor1)
+departamento1.agregar_profesor(profesor2)
 
 departamento1.devolver_profesores()
 print()

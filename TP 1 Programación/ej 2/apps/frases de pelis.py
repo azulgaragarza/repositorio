@@ -22,28 +22,30 @@ import random
 import datetime
 ruta="D:\\Azul\\repositorio\\TP 1 Programación\\ej 2\\apps\\"
 def opcionE(x):
-    with open(ruta+"opciones_elegidas.txt","a") as elecciones:
+    with open(ruta+"opciones_elegidas.txt","a",encoding="utf-8") as elecciones:
         fecha=datetime.datetime.now()
         elecciones.write(str(x)+" "+str(fecha)+"\n")
     return 
 listaEntera=[] #tiene frases y pelis
 listaP=[] #tiene solo pelis
-listaP2=[] #tiene pelis con indice y ordenadas
+listaP2=[] #tiene pelis sin repeticion
 
-with open(ruta+"frases_de_peliculas.txt") as archi:
+with open(ruta+"frases_de_peliculas.txt",encoding="utf-8") as archi:
     linea=archi.readlines()
     for i in linea:
         listaEntera.append(i.strip().split(";"))
 for x in listaEntera:
     listaP.append(x[1])
 listaP.sort()
-for z in range(len(listaP)):
-    m=[z+1,listaP[z]]
-    listaP2.append(m)
+
+for s in listaP:
+    if s not in listaP2:
+        listaP2.append(s)
 
 while opcion!="5":
     if opcion=="1":
-        print(listaP2)
+        for z in range(len(listaP2)):
+            print(f"{z+1}. {listaP2[z]}")
         opcionE(opcion)
         opcion = input(OPCIONES)
     if opcion=="2":
@@ -53,13 +55,21 @@ while opcion!="5":
        Frase=listaEntera[Num][0] 
        Num2=random.randint(0,len(listaEntera)-1)
        Peli2=listaEntera[Num2][1]
-       Num3=random.randint(0,len(listaEntera)-1) 
-       Peli3=listaEntera[Num3][1]     
+       while Peli2==PeliCorrecta:
+            Num2=random.randint(0,len(listaEntera)-1)
+            Peli2=listaEntera[Num2][1]
+       Num3=random.randint(0,len(listaEntera)-1)
+       Peli3=listaEntera[Num3][1]
+       while Peli3==PeliCorrecta or Peli3==Peli2:
+            Num3=random.randint(0,len(listaEntera)-1) 
+            Peli3=listaEntera[Num3][1]
        Respuestas=[PeliCorrecta, Peli2, Peli3]
        random.shuffle(Respuestas)
        print("¿A que pelicula pertenece la frase?: ", Frase)
-       print(Respuestas)
-       op=int(input("Elija una opcion del 1 al 3: "))
+       print("1. "+Respuestas[0])
+       print("2. "+Respuestas[1])
+       print("3. "+Respuestas[2])
+       op=int(input("Elija una opcion: "))
        if Respuestas[op-1]==PeliCorrecta:
            print("Felicitaciones, respuesta correcta!!")
        else:
@@ -73,8 +83,10 @@ while opcion!="5":
         with open(ruta+"opciones_elegidas.txt") as elecciones:
             l=elecciones.readlines()
             for a in l:
-                lista_elecciones.append(a.strip())
-        print(lista_elecciones)
+                lista_elecciones.append(a.strip().split(" "))
+        for n in lista_elecciones:
+            print(f"Opción {n[0]} el día {n[1]} a las {n[2]}")
+        #print(lista_elecciones)
         opcion = input(OPCIONES)
     
     if opcion=="4":
