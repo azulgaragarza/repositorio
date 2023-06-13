@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect
+from modules.classes import *
 app = Flask(__name__)
 @app.route("/", methods=['GET','POST'])
 def home():
