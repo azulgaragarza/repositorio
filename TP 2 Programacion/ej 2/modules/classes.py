@@ -3,16 +3,13 @@ import numpy as np
 import random
 import matplotlib.pyplot as plt
 
-class Alimentos():
-    def __init__(self):
-        self.aw_alimentos=0
-        pass
 
-class Verduras(Alimentos):
+class Verduras():
     def aw_verduras(self):
-        raise NotImplementedError("La subclase debe implementar el metodo")
+        raise NotImplementedError("La subclase debe implementar el metodo") #este método no ha sido implementado 
+                                    #en la clase actual y se espera que sea implementado en una subclase.
 
-class Frutas(Alimentos):
+class Frutas():
     def aw_frutas(self):
         raise NotImplementedError("La subclase debe implementar el metodo")
 
@@ -20,25 +17,29 @@ class Kiwi(Frutas):
     def __init__(self):
         self.C=18
     def aw_frutas(self,m):
-        self.aw_kiwi=(0.96*((1-((math.e)**(-self.C*m)))/(1+((math.e)**(-self.C*m)))))
+        self.masa=m
+        self.aw_kiwi=(0.96*((1-((math.e)**(-self.C*self.masa)))/(1+((math.e)**(-self.C*self.masa)))))
     
 class Manzana(Frutas):
     def __init__(self):
         self.C=15
     def aw_frutas(self,m):
-        self.aw_manzana=(0.97*(((self.C*m)**2)/(1+((self.C*m)**2))))
+        self.masa=m
+        self.aw_manzana=(0.97*(((self.C*self.masa)**2)/(1+((self.C*self.masa)**2))))
 
 class Papa(Verduras):
     def __init__(self):
         self.C=18
     def aw_verduras(self,m): #Polimorfismo
-        self.aw_papa=0.66*(math.atan(self.C*m))
+        self.masa=m
+        self.aw_papa=0.66*(math.atan(self.C*self.masa))
 
 class Zanahoria(Verduras):
     def __init__(self):
         self.C=10
     def aw_verduras(self,m):
-        self.aw_zanahoria=0.96*(1-(math.e**(-self.C*m)))
+        self.masa=m
+        self.aw_zanahoria=0.96*(1-(math.e**(-self.C*self.masa)))
 
 class Cinta_Transportadora():
     def __init__(self,pesos,alimentos):
@@ -147,7 +148,7 @@ class Cajon(Cinta_Transportadora):
         else:
             self.prom_frutas=0
         
-    def prom_total(self,cant_alimentos):
+    def aw_prom_total(self,cant_alimentos):
         suma=0
         for t in self.lista_objetos:
             if isinstance(t,Kiwi):

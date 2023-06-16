@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request
 from modules.classes import *
 import random
 lista_objetos = []
@@ -33,7 +33,7 @@ def home():
         cajon.aw_prom_zanahorias()
         cajon.aw_prom_frutas()
         cajon.aw_prom_verduras()
-        cajon.prom_total(int(cant_alimentos))
+        cajon.aw_prom_total(int(cant_alimentos))
 
         global aw_promedio_kiwi 
         aw_promedio_kiwi = cajon.prom_k
