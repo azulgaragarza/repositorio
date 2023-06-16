@@ -97,11 +97,13 @@
     }
     
     .inner-box div::after {
-      content: "";
+      content:attr(data);
       width: 50px;
+      align-items: center;
       height: 30px;
       background-color: rgb(35, 99, 236);
       border: 1px solid white;
+      color:white;
       border-radius: 7px;
       position: absolute;
       right: 50px;
@@ -111,10 +113,12 @@
     .inner-box2 {
       margin-top: 20px;
       width: 480px;
+      align-items: center;
       height: 40px;
       background-color: #f7db7f;
       border: 1px solid rgb(248, 170, 1);
       border-radius: 5px;
+      font-family: Verdana
     }
   </style>
 </head>
@@ -132,15 +136,16 @@
   </div>
   <div class="outer-box">
     <div class="inner-box">
-        <div class="bold">aw Frutas: {{ prom_frutas }}</div>
-        <div>aw kiwi:  {{ prom_kiwi }}</div>
-        <div>aw manzana: {{ prom_manzana }}</div> 
-        <div class="bold">aw Verduras: {{ prom_verdu }}</div>
-        <div>aw papas: {{ prom_papa }}</div>
-        <div>aw zanahorias: {{ prom_zana }}</div>
-        <div class="bold">aw Total: {{ prom_total }}</div>
+        <div class="bold" data="{{ prom_frutas }}">aw Frutas:</div>
+        <div data="{{ prom_kiwi }}">aw kiwi:</div>
+        <div data="{{ prom_manzana }}">aw manzana:</div> 
+        <div class="bold" data="{{ prom_verdu }}">aw Verduras:</div>
+        <div data="{{ prom_papa }}">aw papas:</div>
+        <div data="{{ prom_zana }}">aw zanahorias:</div>
+        <div class="bold" data="{{ prom_total }}">aw Total: </div>
     </div>
     <div class="inner-box2">
+      {{ mensaje }}
 
     </div>
   </div>
