@@ -8,8 +8,8 @@ class DetectorAlimento:
     """
     def __init__(self):
         self.alimentos = ["kiwi", "manzana", "papa", "zanahoria", "undefined"]
-        self.peso_alimentos = round(np.linspace(0.05, 0.6, 12),2)
-        self.prob_pesos = round(self.__softmax(self.peso_alimentos)[::-1], 2)
+        self.peso_alimentos = np.round(np.linspace(0.05, 0.6, 12),2)
+        self.prob_pesos = np.round(self.__softmax(self.peso_alimentos)[::-1], 2)
 
     def __softmax(self, x):
         """función softmax para crear vector de probabilidades 
@@ -25,15 +25,20 @@ class DetectorAlimento:
         alimento_detectado = self.alimentos[random.randint(0, n_alimentos-1)]
         peso_detectado = random.choices(self.peso_alimentos, self.prob_pesos)[0]
         return {"alimento": alimento_detectado, "peso": peso_detectado}
-    
+
+
 
 if __name__ == "__main__":
     
     random.seed(1)
     sensor = DetectorAlimento()
     lista_pesos = []
+    lista_alimentos = []
     for _ in range(200):
         lista_pesos.append(sensor.detectar_alimento()["peso"])
+        lista_alimentos.append(sensor.detectar_alimento()["alimento"])
 
+    print(lista_pesos)
+    print(lista_alimentos)
     plt.hist(lista_pesos, bins=12)
     plt.show()

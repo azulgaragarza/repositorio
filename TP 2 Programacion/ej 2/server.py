@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, redirect
 from modules.classes import *
+from modules.functions import *
 import random
-
+lista_objetos = []
 aw_promedio_kiwi = 0
 aw_promedio_manzana = 0
 aw_promedio_zanahoria = 0
@@ -18,22 +19,16 @@ def home():
 
     if request.method == 'POST':
         cant_alimentos=request.form["cant_alimentos"]
-        clases=[Kiwi, Manzana, Zanahoria, Papa]
-        objetos_por_clase = {}
-
-        for clase in clases:
-            objetos_por_clase[clase] = []
-
-        for x in range(int(cant_alimentos)):
-            clase = random.choice(clases)
-            peso_aleatorio = random.uniform(0,600) #asigna un peso random a cada objeto
-            objeto = clase(peso_aleatorio)
-            objetos_por_clase[clase].append(objeto)
-
-        obj_kiwi = objetos_por_clase[Kiwi]
-        obj_manzana = objetos_por_clase[Manzana]
-        obj_zanahoria = objetos_por_clase[Zanahoria]
-        obj_papa = objetos_por_clase[Papa]
+        random.seed(1)
+        sensor = DetectorAlimento()
+        lista_pesos = []
+        lista_alimentos = []
+        lista_objetos=[]
+        for i in range(cant_alimentos):
+            lista_pesos.append(sensor.detectar_alimento()["peso"])
+            lista_alimentos.append(sensor.detectar_alimento()["alimento"])
+        
+        crear_objetos(lista_pesos,lista_alimentos,lista_objetos)
 
         promedio = aw_promedio(obj_kiwi,obj_manzana,obj_zanahoria,obj_papa)
         promedio.aw_prom_kiwis()

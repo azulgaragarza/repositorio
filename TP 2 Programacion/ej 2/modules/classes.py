@@ -3,40 +3,50 @@ import numpy as np
 import random
 import matplotlib.pyplot as plt
 
+class Alimentos():
+    def __init__(self):
+        pass
+
+class Verduras(Alimentos):
+    def aw_verduras(self):
+        raise NotImplementedError("La subclase debe implementar el metodo")
+
+class Frutas(Alimentos):
+    def aw_frutas(self):
+        raise NotImplementedError("La subclase debe implementar el metodo")
+
 class Kiwi():
-    def __init__(self,m):
+    def __init__(self):
         self.C=18
+    def aw_frutas(self,m):
         self.aw_kiwi=(0.96*((1-((math.e)**(-self.C*m)))/(1+((math.e)**(-self.C*m)))))
     
 class Manzana():
-    def __init__(self,m):
+    def __init__(self):
         self.C=15
+    def aw_frutas(self,m):
         self.aw_manzana=(0.97*(((self.C*m)**2)/(1+((self.C*m)**2))))
 
-class Papa():
-    def __init__(self,m):
+class Papa(Verduras):
+    def __init__(self):
         self.C=18
+    def aw_verduras(self,m): #Polimorfismo
         self.aw_papa=0.66*(math.atan(self.C*m))
 
-class Zanahoria():
-    def __init__(self,m):
+class Zanahoria(Verduras):
+    def __init__(self):
         self.C=10
+    def aw_verduras(self,m):
         self.aw_zanahoria=0.96*(1-(math.e**(-self.C*m)))
 
 class aw_promedio():
     def __init__(self,lista_k,lista_m,lista_z,lista_p):
-        self.kiwis=lista_k
-        self.manzanas=lista_m
-        self.zanahorias=lista_z
-        self.papas=lista_p
-        self.aw_kiwis = []
-        self.aw_manzanas = []
-        self.aw_zanahorias = []
-        self.aw_papas = []
+        self.aw_kiwis = lista_k
+        self.aw_manzanas = lista_m
+        self.aw_zanahorias = lista_z
+        self.aw_papas = lista_p
 
     def aw_prom_kiwis(self):
-        for obj in self.kiwis:
-            self.aw_kiwis.append(obj.aw_kiwi)
         suma=0
         for k in range(len(self.aw_kiwis)):
             suma=suma+self.aw_kiwis[k]
@@ -44,8 +54,6 @@ class aw_promedio():
         self.prom_k=promedio_k
 
     def aw_prom_manzanas(self):
-        for obj in self.manzanas:
-            self.aw_manzanas.append(obj.aw_manzana)
         suma=0
         for m in range(len(self.aw_manzanas)):
             suma=suma+self.aw_manzanas[m]
@@ -53,8 +61,6 @@ class aw_promedio():
         self.prom_m=promedio_m
         
     def aw_prom_zanahorias(self):
-        for obj in self.zanahorias:
-            self.aw_zanahorias.append(obj.aw_zanahoria)
         suma=0
         for z in range(len(self.aw_zanahorias)):
             suma=suma+self.aw_zanahorias[z]
@@ -62,8 +68,6 @@ class aw_promedio():
         self.prom_z=promedio_z
 
     def aw_prom_papa(self):
-        for obj in self.papas:
-            self.aw_papas.append(obj.aw_papa)
         suma=0
         for p in range(len(self.aw_papas)):
             suma=suma+self.aw_papas[p]
@@ -85,8 +89,8 @@ class DetectorAlimento:
     """
     def __init__(self):
         self.alimentos = ["kiwi", "manzana", "papa", "zanahoria", "undefined"]
-        self.peso_alimentos = round(np.linspace(0.05, 0.6, 12),2)
-        self.prob_pesos = round(self.__softmax(self.peso_alimentos)[::-1], 2)
+        self.peso_alimentos = np.round(np.linspace(0.05, 0.6, 12),2)
+        self.prob_pesos = np.round(self.__softmax(self.peso_alimentos)[::-1], 2)
 
     def __softmax(self, x):
         """función softmax para crear vector de probabilidades 
