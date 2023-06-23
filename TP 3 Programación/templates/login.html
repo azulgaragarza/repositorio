@@ -1,0 +1,74 @@
+
+<head style="background-color:paleturquoise">
+    <meta charset="UTF-8">
+    <style>
+        tr,td {
+        align-content: center;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        padding-right:70px;
+        padding-left: 70px;
+        border: 1px solid #01a4a7;
+        border-collapse: collapse;
+        }
+        button{
+        border:1px solid #01a4a7;
+        border-style: double;
+        color:#01a4a7;
+        align-content: center;
+        background-color: paleturquoise;
+        padding: 10px 50px;
+        cursor: pointer;
+        }
+        .centrar {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        }
+        h1,h2 {
+        color:black;
+        font-family:Arial, Helvetica, sans-serif;
+        }
+        .centrar_element {
+        align-items: center;
+        justify-content: center;
+        display: flex;
+        }
+    </style>
+</head>
+
+<body style="background-color: paleturquoise;">
+    <h1 class="centrar_element">Gestion de reclamos FI-UNER</h1>
+    <h2 class="centrar_element">Para iniciar un reclamo, ingrese a su usuario:</h2>
+    <div>
+        <form action="" method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <table>
+                <td class="centrar">
+            <div>
+                {{ form.email.label }}<br>
+                {{ form.email }}<br><br>
+                {% for error in form.email.errors %} 
+                <span style="color: red;">{{ error }}</span>
+                {% endfor %}
+            </div><br>
+            <div>
+                {{ form.password.label }} <br>
+                {{ form.password }}<br><br>
+                {% for error in form.password.errors %}
+                <span style="color: red;">{{ error }}</span>
+                {% endfor %}
+            </div><br>
+            <div>{{ form.remember_me() }} {{ form.remember_me.label }}</div><br>
+            <div>
+                {{ form.submit() }} 
+            </div><br>
+        </form>
+    </div>
+    <div>¿No tienes cuenta?<br><br> 
+        <button type="submit" onclick="location.href='/crear_usuario'">Crear usuario</button>
+    </div>
+</td>
+</table>
+</body>
