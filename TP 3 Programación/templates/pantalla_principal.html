@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+    <head style="background-color:paleturquoise">
+        <style>
+        tr,td {
+        align-content: center;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        padding-right:70px;
+        padding-left: 70px;
+        border: 1px solid #01a4a7;
+        border-collapse: collapse;
+        }
+        button{
+        border:1px solid #01a4a7;
+        border-style: double;
+        color:#01a4a7;
+        align-content: center;
+        background-color: paleturquoise;
+        padding: 20px 70px;
+        cursor: pointer;
+        font-size: large;
+        }
+        .centrar {
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        }
+        h1 {
+        color:black;
+        font-family:Arial, Helvetica, sans-serif;
+        }
+        .centrar_element {
+        align-items: center;
+        justify-content: center;
+        display: flex;
+        }
+        </style>
+    </head>
+    <body style="background-color:paleturquoise">
+        <h1 class="centrar_element">Pantalla principal</h1>
+        <table class="centrar">
+            <td>
+                <button onclick="location.href='/crear_reclamo'">Crear reclamo</button><br><br>
+                <button onclick="location.href='/lista_reclamos'">Lista de reclamos</button><br><br>
+                <button onclick="location.href='/mis_reclamos'">Mis reclamos</button>
+            </td>
+        </table>
+    </body>
