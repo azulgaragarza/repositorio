@@ -60,14 +60,16 @@
                 <span style="color: red;">{{ error }}</span>
                 {% endfor %}
             </div><br>
-            <div>{{ form.remember_me() }} {{ form.remember_me.label }}</div><br>
-            <div>
+            <div class="centrar_element">
                 {{ form.submit() }} 
             </div><br>
         </form>
     </div>
+
     <div>¿No tienes cuenta?<br><br> 
-        <button type="submit" onclick="location.href='/crear_usuario'">Crear usuario</button>
+        <form action="/crear_usuario" method="GET">
+            <button type="submit" >Crear usuario</button>
+        </form>
     </div>
 </td>
 </table>

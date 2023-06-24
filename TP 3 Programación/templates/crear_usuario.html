@@ -39,25 +39,52 @@
         </style>
     </head>
     <body style="background-color:paleturquoise">
-        <h1 class="centrar_element">FI-UNER</h2>
-            <table>
-                <td class="centrar">
-                    <form action="/" method="post">
-                        <p>Nombre:</p>
-                        <input type="text" id="nombre" name="nombre" size="30px"><br><br>
-                        <p>Apellido:</p>
-                        <input type="text" id="apellido" name="apellido" size="30px"><br><br>
-                        <p>Correo:</p>
-                        <input type="text" id="correo" name="correo" size="30px"><br><br>
-                        <p>Claustro:</p>
-                        <input type="text" id="correo" name="correo" size="30px"><br><br>
-                        <p>Contraseña:</p>
-                        <input type="text" id="contraseña" name="contraseña" size="30px"><br><br>
-                        <p>Reingresa contraseña:</p>
-                        <input type="text" id="contra_R" name="contra_R" size="30px"><br><br>
-                        <button type="submit">Registrarme</button>
-                    </form>
+        <h1 class="centrar_element">FI-UNER</h1>
+        <h2 class="centrar_element">Registre sus datos:</h2>
+            <form action="" method="post" novalidate>
+                {{ form.hidden_tag() }}
+                <table>
+                    <td class="centrar">
+                <div>
+                    {{ form.name.label }}<br>
+                    {{ form.name }}<br><br>
+                    {% for error in form.name.errors %} 
+                    <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+                </div><br>
+                <div>
+                    {{ form.apellido.label }}<br>
+                    {{ form.apellido }}<br><br>
+                    {% for error in form.apellido.errors %} 
+                    <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+                </div><br>
+                <div>
+                    {{ form.email.label }}<br>
+                    {{ form.email }}<br><br>
+                    {% for error in form.email.errors %} 
+                    <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+                </div><br>
+                <div>
+                    {{ form.password.label }} <br>
+                    {{ form.password }}<br><br>
+                    {% for error in form.password.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+                </div><br>
+                <div>
+                    {{ form.confirm.label }} <br>
+                    {{ form.confirm }}<br><br>
+                    {% for error in form.confirm.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+                </div><br>
+                <div>
+                    {{ form.submit() }} 
+                </div>
                 </td>
-            </table>
+                </table>
+            </form>
     </body>
 </html>

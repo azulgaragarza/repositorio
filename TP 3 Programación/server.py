@@ -1,56 +1,74 @@
-from flask import Flask, render_template, redirect, request, flash
+from flask import Flask, render_template, redirect, request, flash, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import *
-from modules.forms import LoginForm, SignupForm
+from modules.forms import LoginForm, RegisterForm
+from werkzeug.security import generate_password_hash, check_password_hash
 
+
+db = SQLAlchemy()
+from modules.classes import *
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///usuarios.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-from modules.classes import *
+db.init_app(app)
+
+
 
 login_manager = LoginManager()
-login_manager.login_view = "login"
+login_manager.init_app(app)
+
+with app.app_context():
+    db.create_all()
+
 
 @login_manager.user_loader
 def load_user(user_id):
     return Usuario.get_by_id(int(user_id))
 
-user= None
+
 @app.route("/", methods=['GET','POST'])
 def Login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        global user
-        user = Usuario.get_by_email(form.email.data)
-    if user is not None and user.check_password(form.password.data):
-        login_user(user, remember=form.remember_me.data)
-    return render_template("login.html", form=form)
+    login_form = LoginForm()
+    if login_form.validate_on_submit():
+        email = login_form.email.data
+        password = login_form.password.data
+
+        user = Usuario.query.filter_by(email=email).first()
+        if not user:
+            flash("That email does not exist, please try again")
+            return redirect(url_for("login"))
+        elif not check_password_hash(user.password, password):
+            flash("Password incorrect, please try again.")
+            return redirect(url_for("login"))
+    return render_template("login.html", form=login_form)
 
 @app.route("/crear_usuario", methods=['GET','POST'])
 def crear_usuario():
-    if current_user.is_authenticated:
-        return redirect('pantalla_principal.html')
-    form = SignupForm()
-    error = None
-    if form.validate_on_submit():
-        name = form.name.data
-        email = form.email.data
-        password = form.password.data
-        # Comprobamos que no hay ya un usuario con ese email
-        user = Usuario.get_by_email(email)
-        if user is not None:
-            error = f'El email {email} ya está siendo utilizado por otro usuario'
-        else:
-            # Creamos el usuario y lo guardamos
-            user = Usuario(name=name, email=email)
-            user.set_password(password)
-            user.save()
-            # Dejamos al usuario logueado
-            login_user(user, remember=True)
-    return render_template('crear_usuario.html',form=form, error=error)
+    register_form = RegisterForm()
+
+    if register_form.validate_on_submit():
+        if Usuario.query.filter_by(email=register_form.email.data).first():
+            flash("You've already signed up with that email, log in instead!")
+            return redirect(url_for('Login'))
+
+        encripted_pass = generate_password_hash(
+            password= register_form.password.data,
+            method= 'pbkdf2:sha256',
+            salt_length=8
+        )
+        new_user = Usuario(
+            email = register_form.email.data,
+            password = encripted_pass,
+            name = register_form.name.data,
+            apellido = register_form.apellido.data
+            )
+        db.session.add(new_user)
+        db.session.commit()
+        return redirect(url_for("Login"))
+    return render_template('crear_usuario.html', form=register_form)
+
 
 @app.route("/pantalla_principal", methods=['GET','POST'])
 def pantalla_principal():
