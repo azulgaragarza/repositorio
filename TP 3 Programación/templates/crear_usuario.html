@@ -36,6 +36,9 @@
         justify-content: center;
         display: flex;
         }
+        .mensaje {
+        color: red;
+        }
         </style>
     </head>
     <body style="background-color:paleturquoise">
@@ -62,7 +65,7 @@
                 <div>
                     {{ form.claustro.label }}<br>
                     {{ form.claustro }}<br><br>
-                    {% for error in form.name.errors %} 
+                    {% for error in form.claustro.errors %} 
                     <span style="color: red;">{{ error }}</span>
                     {% endfor %}
                 </div><br>
@@ -93,5 +96,16 @@
                 </td>
                 </table>
             </form>
+        <div class="mensaje">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <ul class="flash-messages">
+                    {% for message in messages %}
+                    {{ message }}
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            {% endwith %}
+        </div>
     </body>
 </html>

@@ -3,7 +3,7 @@
 <html>
     <head style="background-color:paleturquoise">
         <style>
-        tr,td {
+        td {
         align-content: center;
         padding-top: 15px;
         padding-bottom: 15px;
@@ -11,16 +11,6 @@
         padding-left: 70px;
         border: 1px solid #01a4a7;
         border-collapse: collapse;
-        }
-        button{
-        border:1px solid #01a4a7;
-        border-style: double;
-        color:#01a4a7;
-        align-content: center;
-        background-color: paleturquoise;
-        padding: 20px 70px;
-        cursor: pointer;
-        font-size: large;
         }
         .centrar {
         position: absolute;
@@ -37,13 +27,33 @@
         justify-content: center;
         display: flex;
         }
+        .custom-input {
+        width: 300px;
+        }
+        input[type="submit"] {
+        border:1px solid #01a4a7;
+        border-style: double;
+        color:#01a4a7;
+        align-content: center;
+        background-color: paleturquoise;
+        padding: 10px 50px;
+        cursor: pointer;
+        }
         </style>
     </head>
     <body style="background-color:paleturquoise">
         <h1 class="centrar_element">Crear reclamo</h1>
-        <table class="centrar">
-            <td>
-                
-            </td>
-        </table>
+            <table>
+                <td class="centrar">
+                    <form action="" method="post">
+                        <label for="asunto">Asunto:</label>
+                        <input type="text" id="asunto" name="asunto" class="custom-input"><br><br>
+                        <label for="reclamo">Reclamo:</label>
+                        <input type="text" id="reclamo" name="reclamo" class="custom-input"><br><br>
+                        <input type="file" name="imagen"><br><br>
+                        <input type="submit" value="Crear reclamo">
+                    </form>
+                </td>
+            </table>
+        </form>
     </body>

@@ -2,20 +2,35 @@ from flask import Flask, render_template, redirect, request, flash, url_for, abo
 from flask_login import *
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
-
+from flask_sqlalchemy import SQLAlchemy
 from modules.forms import LoginForm, RegisterForm
-from modules.classes import Usuario
-from modules.config import app, db, login_manager
+#from werkzeug.utils import secure_filename
+#from flask_uploads import UploadSet, configure_uploads, IMAGES
 
+
+
+db = SQLAlchemy()
+from modules.classes import *
+app = Flask(__name__)
+app.secret_key = 'my_secret_key'
+#photos = UploadSet('photos', IMAGES) #para subir fotos
+#app.config['UPLOADED_PHOTOS_DEST'] = 'data'
+#configure_uploads(app, photos)
+app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db.init_app(app)
+
+
+login_manager = LoginManager()
+login_manager.init_app(app)
 
 with app.app_context():
     db.create_all() #crea la base de datos
 
-
 @login_manager.user_loader
 def user_loader(user_id):
     return Usuario.query.get(user_id)
-
 
 admin_list = [1] 
 
@@ -80,6 +95,7 @@ def crear_usuario():
     return render_template('crear_usuario.html', form=register_form)
 
 @app.route("/jefe_departamento", methods=['GET','POST'])
+@admin_only
 def jefe_departamento():
     return render_template('jefe_departamento.html')
 
@@ -88,10 +104,24 @@ def jefe_departamento():
 def pantalla_principal():
     return render_template('pantalla_principal.html')
 
+
 @app.route("/crear_reclamo", methods=['GET','POST'])
 def crear_reclamo():
+    if request.method == 'POST' and 'photo' in request.files:
+        asunto = request.form['asunto']
+        desc_reclamo = request.form['reclamo']
+        #file = request.files['imagen']
+        #data = file.read()
+        reclamo = Reclamo(
+            usuario_creador = current_user.email,
+            asunto = asunto,
+            descripcion = desc_reclamo,
+            #imagen = data
+        )
+        db.session.add(reclamo)
+        db.session.commit()
+        redirect(url_for('pantalla_principal'))
     return render_template('crear_reclamo.html')
-
 
 if __name__ == '__main__':
    app.run(debug = True)

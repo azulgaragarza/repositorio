@@ -11,7 +11,7 @@
         border: 1px solid #01a4a7;
         border-collapse: collapse;
         }
-        button{
+        button, input[type="submit"]{
         border:1px solid #01a4a7;
         border-style: double;
         color:#01a4a7;
@@ -34,6 +34,9 @@
         align-items: center;
         justify-content: center;
         display: flex;
+        }
+        .mensaje {
+        color: red;
         }
     </style>
 </head>
@@ -65,7 +68,6 @@
             </div><br>
         </form>
     </div>
-
     <div>¿No tienes cuenta?<br><br> 
         <form action="/crear_usuario" method="GET">
             <button type="submit" >Crear usuario</button>
@@ -73,4 +75,15 @@
     </div>
 </td>
 </table>
+<div class="mensaje">
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class="flash-messages">
+      {% for message in messages %}
+        {{ message }}
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+</div>
 </body>
