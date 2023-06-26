@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+    <head style="background-color:paleturquoise">
+        <style>
+        tr,td {
+        align-content: center;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        padding-right:70px;
+        padding-left: 70px;
+        border: 1px solid #01a4a7;
+        border-collapse: collapse;
+        }
+        button{
+        border:1px solid #01a4a7;
+        border-style: double;
+        color:#01a4a7;
+        align-content: center;
+        background-color: paleturquoise;
+        padding: 20px 70px;
+        cursor: pointer;
+        font-size: large;
+        }
+        .centrar {
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        }
+        h1,h2 {
+        color:black;
+        font-family:Arial, Helvetica, sans-serif;
+        }
+        .centrar_element {
+        align-items: center;
+        justify-content: center;
+        display: flex;
+        }
+        .mensaje {
+        color: red;
+        }
+        </style>
+    </head>
+    <body style="background-color:paleturquoise">
+        <h1 class="centrar_element">Adherirse a reclamo</h1>
+        <h2 class="centrar_element">Se han encontrado reclamos similares. Puedes adherirte a alguno de ellos:</h2>
+        <table class="centrar">
+            <td>
+                <ul>
+                  {% if reclamos %}
+                    {% for reclamo in reclamos %}
+                      <li>{{ reclamo.asunto }}</li>
+                      <li>{{ reclamo.descripcion }}</li>
+                      <form action="{{ url_for('adherir_reclamo', reclamo_id=reclamo.id) }}" method="POST">
+                        <input type="submit" value="Adherirse">
+                      </form>
+                    {% endfor %}
+                  </ul>
+                  {% else %}
+                  <p>No se han encontrado reclamos similares.</p>
+                  <p>Puedes continuar completando el formulario para crear un nuevo reclamo:</p>
+                  <!-- Agrega aquí el formulario para crear un reclamo nuevo -->
+                {% endif %}
+            </td>
+        </table>
+        <div class="mensaje">
+          {% with messages = get_flashed_messages() %}
+            {% if messages %}
+              <ul class="flash-messages">
+                {% for message in messages %}
+                  {{ message }}
+                {% endfor %}
+              </ul>
+            {% endif %}
+          {% endwith %}
+    </body>

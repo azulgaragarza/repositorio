@@ -39,6 +39,9 @@
         padding: 10px 50px;
         cursor: pointer;
         }
+        .mensaje {
+        color: red;
+        }
         </style>
     </head>
     <body style="background-color:paleturquoise">
@@ -56,4 +59,15 @@
                 </td>
             </table>
         </form>
+        <div class="mensaje">
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                <ul class="flash-messages">
+                  {% for message in messages %}
+                    {{ message }}
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            {% endwith %}
+            </div>
     </body>

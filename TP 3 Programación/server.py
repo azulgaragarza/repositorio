@@ -3,6 +3,7 @@ from flask_login import *
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import or_
 from modules.forms import LoginForm, RegisterForm
 #from werkzeug.utils import secure_filename
 #from flask_uploads import UploadSet, configure_uploads, IMAGES
@@ -28,17 +29,22 @@ login_manager.init_app(app)
 with app.app_context():
     db.create_all() #crea la base de datos
 
-@login_manager.user_loader
-def user_loader(user_id):
-    return Usuario.query.get(user_id)
-
 admin_list = [1] 
 
 def is_admin():
-    if current_user.is_authenticated and current_user.id in admin_list:
-        return True
-    else:
-        return False
+        if current_user.is_authenticated and current_user.id in admin_list:
+            return True
+        else:
+            return False
+
+@login_manager.user_loader
+def user_loader(user_id):
+    user = Usuario.query.get(user_id)
+    if user:
+        if user.id in admin_list:
+            return Jefe_departamento.query.get(user_id)
+        else:
+            return Usuario_final.query.get(user_id)
 
 def admin_only(f):
     @wraps(f)
@@ -55,11 +61,11 @@ def Login():
         email = login_form.email.data
         password = login_form.password.data
         user = Usuario.query.filter_by(email=email).first()
-        if not user: #controlar porque no hace esto
-            flash("That email does not exist, please try again")
+        if not user:
+            flash("El email que ingresaste no existe, intenta de nuevo")
             return redirect(url_for("Login"))
         elif not check_password_hash(user.password, password):
-            flash("Password incorrect, please try again.")
+            flash("Contraseña incorrecta, intenta de nuevo")
             return redirect(url_for("Login"))
         else:
             login_user(user)
@@ -74,7 +80,7 @@ def crear_usuario():
     register_form = RegisterForm()
     if register_form.validate_on_submit():
         if Usuario.query.filter_by(email=register_form.email.data).first():
-            flash("You've already signed up with that email, log in instead!")
+            flash("Ya te registraste con ese email, puedes iniciar sesion!")
             return redirect(url_for('Login'))
 
         encripted_pass = generate_password_hash(
@@ -106,22 +112,48 @@ def pantalla_principal():
 
 
 @app.route("/crear_reclamo", methods=['GET','POST'])
+@login_required
 def crear_reclamo():
-    if request.method == 'POST' and 'photo' in request.files:
+    if request.method == 'POST': #and 'photo' in request.files:
         asunto = request.form['asunto']
         desc_reclamo = request.form['reclamo']
+        
         #file = request.files['imagen']
         #data = file.read()
-        reclamo = Reclamo(
-            usuario_creador = current_user.email,
-            asunto = asunto,
-            descripcion = desc_reclamo,
-            #imagen = data
-        )
-        db.session.add(reclamo)
-        db.session.commit()
-        redirect(url_for('pantalla_principal'))
+
+        # Buscar reclamos similares en la base de datos
+        reclamos_similares = Reclamo.query.filter(
+            or_(
+                Reclamo.asunto.ilike(f'%{asunto}%'),  # Búsqueda insensible a mayúsculas y minúsculas
+                Reclamo.descripcion.ilike(f'%{desc_reclamo}%')
+            )
+        ).all()
+        
+        if reclamos_similares:
+            # Hay reclamos similares, mostrar la opción de adherirse
+        
+            return render_template('adherirse_reclamo.html', reclamos=reclamos_similares)
+        else:
+            # Crear un nuevo reclamo
+            current_user.crear_reclamo(asunto, desc_reclamo)
+
+            flash("Reclamo creado exitosamente.")
     return render_template('crear_reclamo.html')
+
+@app.route("/adherir_reclamo/<int:reclamo_id>", methods=['POST'])
+@login_required
+def adherir_reclamo(reclamo_id):
+    reclamo = Reclamo.query.get(reclamo_id)
+
+    if reclamo:
+        reclamo.adherente = current_user.email
+        current_user.crear_reclamo(reclamo.asunto, f'adherido a reclamo {reclamo.id}')
+        db.session.commit()
+        flash("Adherido a reclamo existente.")
+    else:
+        flash("El reclamo no existe.")
+        return redirect(url_for('pantalla_principal'))
+    return redirect(url_for('pantalla_principal'))
 
 if __name__ == '__main__':
    app.run(debug = True)

@@ -37,6 +37,9 @@
         justify-content: center;
         display: flex;
         }
+        .mensaje {
+        color: red;
+        }
         </style>
     </head>
     <body style="background-color:paleturquoise">
@@ -48,4 +51,15 @@
                 <button onclick="location.href='/mis_reclamos'">Mis reclamos</button>
             </td>
         </table>
+        <div class="mensaje">
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                <ul class="flash-messages">
+                  {% for message in messages %}
+                    {{ message }}
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            {% endwith %}
+            </div>
     </body>
