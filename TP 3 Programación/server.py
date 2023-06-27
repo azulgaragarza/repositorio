@@ -100,10 +100,6 @@ def crear_usuario():
         return redirect(url_for("Login"))
     return render_template('crear_usuario.html', form=register_form)
 
-@app.route("/jefe_departamento", methods=['GET','POST'])
-@admin_only
-def jefe_departamento():
-    return render_template('jefe_departamento.html')
 
 @app.route("/pantalla_principal", methods=['GET','POST'])
 @login_required
@@ -137,15 +133,14 @@ def crear_reclamo():
 
 @app.route("/adherir_reclamo/<int:reclamo_id>", methods=['POST'])
 @login_required
-def adherir_reclamo(reclamo_id):
-    adherido_reclamo = current_user.adherir_reclamo(reclamo_id)
+def adherirse_reclamo(reclamo_id):
+    adherido_reclamo = current_user.adherirse_reclamo(reclamo_id)
 
     if adherido_reclamo:
         flash("Adherido a reclamo existente.")
     else:
-        flash("Ya te adheriste a este reclamo.")
+        flash("Ya te encuentras adherido a este reclamo.")
     return redirect(url_for('pantalla_principal'))
-
 
 
 @app.route("/lista_reclamos", methods=['GET','POST'])
@@ -165,7 +160,19 @@ def lista_reclamos():
         adherente = request.form['adherente']
         departamento = request.form['departamento']
         detalles = {"id":id,"creador":creador,"fecha":fecha,"estado":estado,"adherente":adherente,"departamento":departamento}
-    return render_template('lista_reclamos.html', reclamos=reclamos, detalles=detalles)
+    return render_template('lista_reclamos.html', reclamos=reclamos, detalles=detalles,user=current_user.email)
+
+@app.route("/mis_reclamos", methods=['GET','POST'])
+@login_required
+def mis_reclamos():
+    mis_reclamos = Reclamo.query.filter_by(usuario_creador=current_user.email)
+    return render_template('mis_reclamos.html',mis_reclamos=mis_reclamos)
+
+
+@app.route("/jefe_departamento", methods=['GET','POST'])
+@admin_only
+def jefe_departamento():
+    return render_template('jefe_departamento.html')
 
 if __name__ == '__main__':
    app.run(debug = True)

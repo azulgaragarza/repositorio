@@ -52,7 +52,7 @@
                     {% for reclamo in reclamos %}
                       <li>{{ reclamo.asunto }}</li>
                         {{ reclamo.descripcion }}
-                      <form action="{{ url_for('adherir_reclamo', reclamo_id=reclamo.id) }}" method="POST">
+                      <form action="{{ url_for('adherirse_reclamo', reclamo_id=reclamo.id) }}" method="POST">
                         <input type="submit" value="Adherirse">
                       </form>
                     {% endfor %}

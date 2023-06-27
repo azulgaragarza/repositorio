@@ -39,7 +39,7 @@ class Usuario_final(Usuario):
         db.session.add(reclamo)
         db.session.commit()
     
-    def adherir_reclamo(self, reclamo_id):
+    def adherirse_reclamo(self, reclamo_id):
         reclamo = Reclamo.query.get(reclamo_id)
         if reclamo:
             if reclamo.adherente == '':

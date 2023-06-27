@@ -12,6 +12,16 @@
         border: 1px solid #01a4a7;
         border-collapse: collapse;
         }
+        button{
+        border:1px solid #01a4a7;
+        border-style: double;
+        color:#01a4a7;
+        align-content: center;
+        background-color: paleturquoise;
+        padding: 10px 30px;
+        cursor: pointer;
+        font-size:small;
+        }
         .centrar {
         position: absolute;
         top: 40%;
@@ -54,8 +64,9 @@
                         <label for="reclamo">Reclamo:</label>
                         <input type="text" id="reclamo" name="reclamo" class="custom-input"><br><br>
                         <input type="file" name="imagen"><br><br>
-                        <input type="submit" value="Crear reclamo">
+                        <input type="submit" value="Crear reclamo"><br><br>
                     </form>
+                      <button onclick="location.href='/pantalla_principal'">Volver</button>
                 </td>
             </table>
         </form>
