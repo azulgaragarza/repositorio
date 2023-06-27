@@ -42,7 +42,7 @@ def user_loader(user_id):
     user = Usuario.query.get(user_id)
     if user:
         if user.id in admin_list:
-            return Jefe_departamento.query.get(user_id)
+            return Jefe_departamento.query.get(user_id)  #en base al id clasifica al usuario actual en jefe o usuario final
         else:
             return Usuario_final.query.get(user_id)
 
@@ -128,32 +128,44 @@ def crear_reclamo():
                 Reclamo.descripcion.ilike(f'%{desc_reclamo}%')
             )
         ).all()
-        
         if reclamos_similares:
-            # Hay reclamos similares, mostrar la opción de adherirse
-        
             return render_template('adherirse_reclamo.html', reclamos=reclamos_similares)
         else:
-            # Crear un nuevo reclamo
             current_user.crear_reclamo(asunto, desc_reclamo)
-
             flash("Reclamo creado exitosamente.")
     return render_template('crear_reclamo.html')
 
 @app.route("/adherir_reclamo/<int:reclamo_id>", methods=['POST'])
 @login_required
 def adherir_reclamo(reclamo_id):
-    reclamo = Reclamo.query.get(reclamo_id)
+    adherido_reclamo = current_user.adherir_reclamo(reclamo_id)
 
-    if reclamo:
-        reclamo.adherente = current_user.email
-        current_user.crear_reclamo(reclamo.asunto, f'adherido a reclamo {reclamo.id}')
-        db.session.commit()
+    if adherido_reclamo:
         flash("Adherido a reclamo existente.")
     else:
-        flash("El reclamo no existe.")
-        return redirect(url_for('pantalla_principal'))
+        flash("Ya te adheriste a este reclamo.")
     return redirect(url_for('pantalla_principal'))
+
+
+
+@app.route("/lista_reclamos", methods=['GET','POST'])
+@login_required
+def lista_reclamos():
+    detalles = {}
+    departamento_id = request.args.get('departamento_id',default=None)  # Obtener el ID del departamento seleccionado en el filtro
+    reclamos_pendientes = Reclamo.query.filter_by(estado='Pendiente') # Obtener todos los reclamos pendientes
+    if departamento_id:
+        reclamos_pendientes = reclamos_pendientes.filter_by(departamento_id=departamento_id).all()  # Aplicar filtro por departamento
+    reclamos = reclamos_pendientes.all()
+    if request.method == 'POST':
+        id = int(request.form['id'])
+        creador = request.form['creador']
+        fecha = request.form['fecha']
+        estado = request.form['estado']
+        adherente = request.form['adherente']
+        departamento = request.form['departamento']
+        detalles = {"id":id,"creador":creador,"fecha":fecha,"estado":estado,"adherente":adherente,"departamento":departamento}
+    return render_template('lista_reclamos.html', reclamos=reclamos, detalles=detalles)
 
 if __name__ == '__main__':
    app.run(debug = True)

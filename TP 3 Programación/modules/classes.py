@@ -39,6 +39,21 @@ class Usuario_final(Usuario):
         db.session.add(reclamo)
         db.session.commit()
     
+    def adherir_reclamo(self, reclamo_id):
+        reclamo = Reclamo.query.get(reclamo_id)
+        if reclamo:
+            if reclamo.adherente == '':
+                reclamo.adherente = current_user.email
+            else:
+                if current_user.email not in reclamo.adherente:
+                    reclamo.adherente = reclamo.adherente + f', { current_user.email}'
+                else:
+                    return False
+            db.session.commit()
+            return True
+        else:
+            return False
+    
 
 class Reclamo(db.Model):
     id = db.Column(db.Integer,primary_key=True)
@@ -63,7 +78,15 @@ class Departamento(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(100), nullable=False)
     descripcion = db.Column(db.String(200))
-    pass
+
+    def __init__(self,nombre, descripcion):
+        self.nombre = nombre
+        self.descripcion = descripcion
+
+    def crear_departamento(nombre, descripcion):
+        departamento = Departamento(nombre=nombre, descripcion=descripcion)
+        db.session.add(departamento)
+        db.session.commit()
 
 class Clasificador_reclamos():
     @staticmethod

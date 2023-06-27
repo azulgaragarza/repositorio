@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+    <head style="background-color:paleturquoise">
+        <style>
+        tr,td {
+        align-content:center;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        padding-right:40px;
+        padding-left: 40px;
+        border: 1px solid #01a4a7;
+        border-collapse: collapse;
+        }
+        button{
+        border:1px solid #01a4a7;
+        border-style: double;
+        color:#01a4a7;
+        align-content: center;
+        background-color: paleturquoise;
+        padding: 10px 30px;
+        cursor: pointer;
+        font-size:small;
+        }
+        .centrar {
+        position: absolute;
+        top: 20%;
+        left: 15%;
+        right: 15%;
+        
+        }
+        h1 {
+        color:black;
+        font-family:Arial, Helvetica, sans-serif;
+        }
+        .centrar_element {
+        align-items: center;
+        justify-content: center;
+        display: flex;
+        }
+        .mensaje {
+        color: red;
+        }
+        </style>
+    </head>
+    <body style="background-color:paleturquoise">
+        <script>
+            function mostrarDescripcion(descripcion) {
+              var descripcionElement = document.getElementById('descripcion_reclamo');
+              if (descripcionElement.style.display === 'none') {
+                descripcionElement.textContent = descripcion;
+                descripcionElement.style.display = 'block';
+              } else {
+                descripcionElement.textContent = '';
+                descripcionElement.style.display = 'none';
+              }
+            }
+            </script>
+        <h1 class="centrar_element">Lista de reclamos</h1>
+        <form action="{{ url_for('lista_reclamos') }}" method="GET">
+            <div class="centrar_element">
+            <label for="departamento">Filtrar por departamento: </label>
+            <select name="departamento" id="departamento">
+              <option value="">Todos los departamentos</option>
+              {% for departamento in departamentos %}
+                <option value="{{ departamento.id }}">{{ departamento.nombre }}</option>
+              {% endfor %}
+            </select>
+            <button type="submit">Filtrar</button>
+            </div>
+          </form>
+        <table class="centrar">
+            {% for reclamo in reclamos %}
+            <tr>
+                <td>{{ reclamo.asunto }} </td> 
+                <td>{{ reclamo.descripcion }}</td>
+                <form action="" method="post">
+                <input type="hidden" name="id" value="{{ reclamo.id }}">
+                <input type="hidden" name="creador" value="{{ reclamo.usuario_creador }}">
+                <input type="hidden" name="fecha" value="{{ reclamo.fecha }}">
+                <input type="hidden" name="estado" value="{{ reclamo.estado }}">
+                <input type="hidden" name="adherente" value="{{ reclamo.adherente }}">
+                <input type="hidden" name="departamento" value="{{ reclamo.departamento }}">
+                <td><input type="submit" value="Mostrar más"></td>
+                </form>
+                {% if detalles!={} and reclamo.id == detalles['id'] %}
+                    <tr>
+                        <td> Id de reclamo: {{ detalles['id'] }} </td>
+                        <td> Creador: {{ detalles['creador'] }} </td>
+                        <td> Fecha de creacion: {{ detalles['fecha'] }} </td>
+                        <td> Estado: {{ detalles['estado'] }} </td>
+                        <td> Adherentes: {{ detalles['adherente'] }} </td>
+                        <td> Departamento: {{ detalles['departamento'] }} </td>
+                    </tr>
+                {% endif %}
+            </tr>
+            {% endfor %}
+            <tr><button onclick="location.href='/pantalla_principal'">Volver</button></tr>
+          
+        </table>
+        <div class="mensaje">
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                <ul class="flash-messages">
+                  {% for message in messages %}
+                    {{ message }}
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            {% endwith %}
+            </div>
+    </body>
