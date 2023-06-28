@@ -9,7 +9,6 @@ from modules.forms import LoginForm, RegisterForm
 #from flask_uploads import UploadSet, configure_uploads, IMAGES
 
 
-
 db = SQLAlchemy()
 from modules.classes import *
 app = Flask(__name__)
@@ -29,7 +28,7 @@ login_manager.init_app(app)
 with app.app_context():
     db.create_all() #crea la base de datos
 
-admin_list = [1] 
+admin_list = [1,5,6] 
 
 def is_admin():
         if current_user.is_authenticated and current_user.id in admin_list:
@@ -136,10 +135,12 @@ def crear_reclamo():
 def adherirse_reclamo(reclamo_id):
     adherido_reclamo = current_user.adherirse_reclamo(reclamo_id)
 
-    if adherido_reclamo:
+    if adherido_reclamo == True:
         flash("Adherido a reclamo existente.")
-    else:
+    elif adherido_reclamo == False:
         flash("Ya te encuentras adherido a este reclamo.")
+    elif adherido_reclamo == "No se puede":
+        flash("Tú hiciste este reclamo, no puedes ser un adherente.")
     return redirect(url_for('pantalla_principal'))
 
 
@@ -147,11 +148,13 @@ def adherirse_reclamo(reclamo_id):
 @login_required
 def lista_reclamos():
     detalles = {}
+    departamentos = Departamento.query.all()
     departamento_id = request.args.get('departamento_id',default=None)  # Obtener el ID del departamento seleccionado en el filtro
     reclamos_pendientes = Reclamo.query.filter_by(estado='Pendiente') # Obtener todos los reclamos pendientes
     if departamento_id:
-        reclamos_pendientes = reclamos_pendientes.filter_by(departamento_id=departamento_id).all()  # Aplicar filtro por departamento
+        reclamos_pendientes = reclamos_pendientes.filter(Reclamo.departamento_id == departamento_id)  # Aplicar filtro por departamento
     reclamos = reclamos_pendientes.all()
+
     if request.method == 'POST':
         id = int(request.form['id'])
         creador = request.form['creador']
@@ -160,7 +163,7 @@ def lista_reclamos():
         adherente = request.form['adherente']
         departamento = request.form['departamento']
         detalles = {"id":id,"creador":creador,"fecha":fecha,"estado":estado,"adherente":adherente,"departamento":departamento}
-    return render_template('lista_reclamos.html', reclamos=reclamos, detalles=detalles,user=current_user.email)
+    return render_template('lista_reclamos.html', reclamos=reclamos, detalles=detalles,user=current_user.email,departamentos=departamentos)
 
 @app.route("/mis_reclamos", methods=['GET','POST'])
 @login_required
@@ -168,11 +171,91 @@ def mis_reclamos():
     mis_reclamos = Reclamo.query.filter_by(usuario_creador=current_user.email)
     return render_template('mis_reclamos.html',mis_reclamos=mis_reclamos)
 
+def departamento1_jefe_only(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        departamento = Departamento.query.filter_by(id=1).first()
+        if not current_user.is_authenticated or not current_user.email==departamento.jefe:
+            return abort(403)  # Acceso no autorizado
+        return f(*args, **kwargs)
+    return decorated_function
+
+def departamento2_jefe_only(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        departamento = Departamento.query.filter_by(id=5).first()
+        if not current_user.is_authenticated or not current_user.email==departamento.jefe:
+            return abort(403)  # Acceso no autorizado
+        return f(*args, **kwargs)
+    return decorated_function
+
+def departamento3_jefe_only(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        departamento = Departamento.query.filter_by(id=6).first()
+        if not current_user.is_authenticated or not current_user.email==departamento.jefe:
+            return abort(403)  # Acceso no autorizado
+        return f(*args, **kwargs)
+    return decorated_function
+
 
 @app.route("/jefe_departamento", methods=['GET','POST'])
 @admin_only
 def jefe_departamento():
-    return render_template('jefe_departamento.html')
+    nombre1 = "Departamento de Coordinación Académica"
+    jefe_depto1 = Usuario.query.filter_by(id=1).first().email
+    current_user.crear_departamento(nombre1,jefe_depto1)
+    nombre2 = "Departamento de Soporte Técnico"
+    jefe_depto2 = Usuario.query.filter_by(id=5).first().email
+    current_user.crear_departamento(nombre2,jefe_depto2)
+    nombre3 = "Departamento de Servicios Estudiantiles"
+    jefe_depto3 = Usuario.query.filter_by(id=6).first().email
+    current_user.crear_departamento(nombre3,jefe_depto3)
+
+    login_form_d1 = LoginForm()
+    if  login_form_d1.validate_on_submit():
+        email = login_form_d1.email.data
+        password = login_form_d1.password.data
+        user = Usuario.query.filter_by(email=email).first()
+
+        if user.id not in admin_list:
+            flash("El email que ingresaste no es de jefe de departamento, intenta de nuevo")
+            return redirect(url_for('jefe_departamento'))
+        elif not check_password_hash(user.password, password):
+            flash("Contraseña incorrecta, intenta de nuevo")
+            return redirect(url_for('jefe_departamento'))
+        else:
+            return redirect('/departamento_1')
+        
+    login_form_d2 = LoginForm() #cambiar estoooo
+    if  login_form_d2.validate_on_submit():
+        email = login_form_d1.email.data
+        password = login_form_d1.password.data
+        user = Usuario.query.filter_by(email=email).first()
+
+        if user.id not in admin_list:
+            flash("El email que ingresaste no es de jefe de departamento, intenta de nuevo")
+            return redirect(url_for('jefe_departamento'))
+        elif not check_password_hash(user.password, password):
+            flash("Contraseña incorrecta, intenta de nuevo")
+            return redirect(url_for('jefe_departamento'))
+        else:
+            return redirect('/departamento_2')
+
+    return render_template('jefe_departamento.html',form_d1=login_form_d1,form_d2=login_form_d2)
+
+
+@app.route("/departamento_1", methods=['GET','POST'])
+@admin_only
+@departamento1_jefe_only
+def departamento_1():
+    return render_template('departamento_1.html')
+
+@app.route("/departamento_2", methods=['GET','POST'])
+@admin_only
+@departamento2_jefe_only
+def departamento_2():
+    return render_template('departamento_2.html')
 
 if __name__ == '__main__':
    app.run(debug = True)

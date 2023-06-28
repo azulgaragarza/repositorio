@@ -48,7 +48,7 @@
         <form action="{{ url_for('lista_reclamos') }}" method="GET">
             <div class="centrar_element">
             <label for="departamento">Filtrar por departamento: </label>
-            <select name="departamento" id="departamento">
+            <select name="departamento_id" id="departamento">
               <option value="">Todos los departamentos</option>
               {% for departamento in departamentos %}
                 <option value="{{ departamento.id }}">{{ departamento.nombre }}</option>
@@ -56,7 +56,7 @@
             </select>
             <button type="submit">Filtrar</button>
             </div>
-          </form>
+        </form>
         <table class="centrar">
             {% for reclamo in reclamos %}
             <tr>
@@ -68,7 +68,8 @@
                 <input type="hidden" name="fecha" value="{{ reclamo.fecha }}">
                 <input type="hidden" name="estado" value="{{ reclamo.estado }}">
                 <input type="hidden" name="adherente" value="{{ reclamo.adherente }}">
-                <input type="hidden" name="departamento" value="{{ reclamo.departamento }}">
+                <input type="hidden" name="departamento" value="{{ reclamo.departamento.nombre }}">
+                
                 <td><input type="submit" name="submit-btn" value="Mostrar más"></td>
                 </form>
                 {% if detalles!={} and reclamo.id == detalles['id'] %}
@@ -78,7 +79,7 @@
                         <td> Fecha de creacion: {{ detalles['fecha'] }} </td>
                         <td> Estado: {{ detalles['estado'] }} </td>
                         <td> Adherentes: {{ detalles['adherente'] }} </td>
-                        <td> Departamento: {{ detalles['departamento'] }} </td>
+                        <td>{{ detalles['departamento'] }} </td>
                         {% if user not in detalles['adherente'] and user!= detalles['creador'] %}
                             <td>
                                 <form action="{{ url_for('adherirse_reclamo', reclamo_id=reclamo.id) }}" method="post">

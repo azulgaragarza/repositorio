@@ -3,7 +3,7 @@
 <html>
     <head style="background-color:paleturquoise">
         <style>
-        tr,td {
+        table,tr,td {
         align-content: center;
         padding-top: 15px;
         padding-bottom: 15px;
@@ -42,8 +42,56 @@
     <body style="background-color:paleturquoise">
         <h1 class="centrar_element">Jefe de departamento</h1>
         <table class="centrar">
-            <td>
-                
-            </td>
+            <tr>
+                <td>Departamento de Coordinación Académica</td>
+                <td>Departamento de Soporte Técnico</td>
+                <td>Departamento de Servicios Estudiantiles</td>
+            </tr>
+            <tr>
+                <td>
+                    <form action="" method="post" novalidate>
+                        {{ form_d1.hidden_tag() }}
+                        <div>
+                            {{ form_d1.email.label }}<br>
+                            {{ form_d1.email }}<br><br>
+                            {% for error in form_d1.email.errors %} 
+                            <span style="color: red;">{{ error }}</span>
+                            {% endfor %}
+                        </div><br>
+                        <div>
+                            {{ form_d1.password.label }} <br>
+                            {{ form_d1.password }}<br><br>
+                            {% for error in form_d1.password.errors %}
+                            <span style="color: red;">{{ error }}</span>
+                            {% endfor %}
+                        </div><br>
+                        <div class="centrar_element">
+                            {{ form_d1.submit() }} 
+                        </div><br>
+                    </form>
+                </td>
+                <td>
+                    <form action="" method="post" novalidate>
+                        {{ form_d2.hidden_tag() }}
+                        <div>
+                            {{ form_d2.email.label }}<br>
+                            {{ form_d2.email }}<br><br>
+                            {% for error in form_d2.email.errors %} 
+                            <span style="color: red;">{{ error }}</span>
+                            {% endfor %}
+                        </div><br>
+                        <div>
+                            {{ form_d2.password.label }} <br>
+                            {{ form_d2.password }}<br><br>
+                            {% for error in form_d2.password.errors %}
+                            <span style="color: red;">{{ error }}</span>
+                            {% endfor %}
+                        </div><br>
+                        <div class="centrar_element">
+                            {{ form_d2.submit() }} 
+                        </div><br>
+                    </form>
+                </td>
+            </tr>
         </table>
     </body>

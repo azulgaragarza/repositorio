@@ -18,23 +18,22 @@ class Usuario(db.Model, UserMixin):
         self.apellido = apellido
         self.claustro = claustro
 
-    
-
-class Jefe_departamento(Usuario):
-    pass
 
 class Usuario_final(Usuario):
     def crear_reclamo(self, asunto, descripcion):
         departamento = Clasificador_reclamos.clasificar_reclamo(asunto, descripcion)
-
+        if departamento is None:
+            departamento = "Esperando asignacion de departamento"
         reclamo = Reclamo(
+        id = None,
         usuario_creador=self.email,
         asunto=asunto,
         descripcion=descripcion,
         departamento=departamento,
         estado='Pendiente',
         adherente='',
-        fecha=datetime.utcnow()
+        fecha=datetime.utcnow(),
+        departamento_id=departamento.id
         )
         db.session.add(reclamo)
         db.session.commit()
@@ -42,13 +41,16 @@ class Usuario_final(Usuario):
     def adherirse_reclamo(self, reclamo_id):
         reclamo = Reclamo.query.get(reclamo_id)
         if reclamo:
-            if reclamo.adherente == '':
-                reclamo.adherente = current_user.email
+            if reclamo.usuario_creador == current_user.email:
+                return "No se puede"
             else:
-                if current_user.email not in reclamo.adherente:
-                    reclamo.adherente = reclamo.adherente + f', { current_user.email}'
+                if reclamo.adherente == '':
+                    reclamo.adherente = current_user.email
                 else:
-                    return False
+                    if current_user.email not in reclamo.adherente:
+                        reclamo.adherente = reclamo.adherente + f', { current_user.email}'
+                    else:
+                        return False
             db.session.commit()
             return True
         else:
@@ -67,41 +69,60 @@ class Reclamo(db.Model):
     fecha = db.Column(db.DateTime, default=datetime.utcnow)
     #imagen = db.Column(db.LargeBinary)
     
-    def __innit__(self, id, descripcion, fecha_hora, usuario_creador, departamento_id):
+    def __init__(self, id, asunto, descripcion, fecha, usuario_creador, departamento, departamento_id, estado, adherente):
         self.id = id
+        self.asunto = asunto
         self.descripcion = descripcion
-        self.fecha_hora = fecha_hora
+        self.fecha = fecha
         self.usuario_creador = usuario_creador
+        self.departamento = departamento
         self.departamento_id = departamento_id
+        self.estado = estado
+        self.adherente = adherente
+
+class Jefe_departamento(Usuario):
+    def crear_departamento(self,nombre,jefe):
+        departamento = Departamento.query.filter_by(nombre=nombre).first()
+        if not departamento:
+            departamento = Departamento(nombre=nombre,jefe=jefe)
+            db.session.add(departamento)
+            db.session.commit()
 
 class Departamento(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(100), nullable=False)
-    descripcion = db.Column(db.String(200))
+    jefe = db.Column(db.String(200))
 
-    def __init__(self,nombre, descripcion):
+    def __init__(self, nombre, jefe):
         self.nombre = nombre
-        self.descripcion = descripcion
-
-    def crear_departamento(nombre, descripcion):
-        departamento = Departamento(nombre=nombre, descripcion=descripcion)
-        db.session.add(departamento)
+        self.jefe = jefe
+        
+    def cambiar_jefe(self,jefe_nuevo,id_depto):
+        departamento = Departamento.query.filter_by(id=id_depto).first()
+        departamento.jefe = jefe_nuevo
         db.session.commit()
 
 class Clasificador_reclamos():
     @staticmethod
-    def clasificar_reclamo(asunto, descripcion):
-       # Lógica de clasificación del reclamo en un departamento específico
-        # Puedes implementar tus propias reglas de clasificación aquí
-        # Por ejemplo, puedes utilizar palabras clave en el asunto o descripción del reclamo
+    def clasificar_reclamo(asunt, description):
+        palabras_clave_dpto1 = ['plan de estudio','currículo académico','programas académicos','carrera','horarios','aulas','calificación','calificaciones','catedra','profesor','examen','asignaturas','pasantías','materia']
+        palabras_clave_dpto2 = ['campus','correo electrónico institucional','software institucional','gestión académica',' aula virtual','conexion','wifi']
+        palabras_clave_dpto3 = ['beca', 'salud', 'residencia', 'transporte','inscripcion','bienestar estudiantil','atención médica','Actividades extracurriculares']
 
-        if 'facturación' in asunto.lower() or 'facturación' in descripcion.lower():
-            return Departamento.query.filter_by(nombre='Departamento de Facturación').first()
+        asunto = asunt.lower()
+        descripcion = description.lower()
 
-        if 'soporte técnico' in asunto.lower() or 'soporte técnico' in descripcion.lower():
-            return Departamento.query.filter_by(nombre='Departamento de Soporte Técnico').first()
+        for palabra in palabras_clave_dpto1:
+            if palabra in asunto or palabra in descripcion:
+                return Departamento.query.filter_by(id=1).first()
 
-        # Otras reglas de clasificación según tus necesidades
-
+        for palabra in palabras_clave_dpto2:
+            if palabra in asunto or palabra in descripcion:
+                return Departamento.query.filter_by(id=2).first()
+    
+        for palabra in palabras_clave_dpto3:
+            if palabra in asunto or palabra in descripcion:
+                return Departamento.query.filter_by(id=3).first()
+        
         # Si no se cumple ninguna regla, clasificar en un departamento por defecto
-        return Departamento.query.filter_by(nombre='Departamento por Defecto').first()
+        return None
