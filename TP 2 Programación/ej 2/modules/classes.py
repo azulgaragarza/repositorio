@@ -18,28 +18,28 @@ class Kiwi(Frutas):
         self.C=18
     def aw_frutas(self,m):
         self.masa=m
-        self.aw_kiwi=(0.96*((1-((math.e)**(-self.C*self.masa)))/(1+((math.e)**(-self.C*self.masa)))))
+        self.aw_kiwi=round(0.96*((1-((math.e)**(-self.C*self.masa)))/(1+((math.e)**(-self.C*self.masa)))),2)
     
 class Manzana(Frutas):
     def __init__(self):
         self.C=15
     def aw_frutas(self,m):
         self.masa=m
-        self.aw_manzana=(0.97*(((self.C*self.masa)**2)/(1+((self.C*self.masa)**2))))
+        self.aw_manzana=round(0.97*(((self.C*self.masa)**2)/(1+((self.C*self.masa)**2))),2)
 
 class Papa(Verduras):
     def __init__(self):
         self.C=18
     def aw_verduras(self,m): #Polimorfismo
         self.masa=m
-        self.aw_papa=0.66*(math.atan(self.C*self.masa))
+        self.aw_papa=round(0.66*(math.atan(self.C*self.masa)),2)
 
 class Zanahoria(Verduras):
     def __init__(self):
         self.C=10
     def aw_verduras(self,m):
         self.masa=m
-        self.aw_zanahoria=0.96*(1-(math.e**(-self.C*self.masa)))
+        self.aw_zanahoria=round(0.96*(1-(math.e**(-self.C*self.masa))),2)
 
 class Cinta_Transportadora():
     def __init__(self,pesos,alimentos):
@@ -48,24 +48,25 @@ class Cinta_Transportadora():
         self.lista_objetos=[]
     def crear_objetos(self):
         for x in range(len(self.alimentos)):
-            if self.alimentos[x]=="kiwi":
-                objeto=Kiwi()
-                objeto.aw_frutas(self.pesos[x]) #le asigna un peso a al objeto
-                self.lista_objetos.append(objeto)
-            elif self.alimentos[x]=="manzana":
-                objeto=Manzana()
-                objeto.aw_frutas(self.pesos[x])
-                self.lista_objetos.append(objeto)
-            elif self.alimentos[x]=="zanahoria":
-                objeto=Zanahoria()
-                objeto.aw_verduras(self.pesos[x])
-                self.lista_objetos.append(objeto)
-            elif self.alimentos[x]=="papa":
-                objeto=Papa()
-                objeto.aw_verduras(self.pesos[x])
-                self.lista_objetos.append(objeto)
-            else:
+            if self.alimentos[x]=="undefined":
                 next
+            else:
+                if self.alimentos[x]=="kiwi":
+                    objeto=Kiwi()
+                    objeto.aw_frutas(self.pesos[x]) #le asigna un peso a al objeto
+                    self.lista_objetos.append(objeto)
+                elif self.alimentos[x]=="manzana":
+                    objeto=Manzana()
+                    objeto.aw_frutas(self.pesos[x])
+                    self.lista_objetos.append(objeto)
+                elif self.alimentos[x]=="zanahoria":
+                    objeto=Zanahoria()
+                    objeto.aw_verduras(self.pesos[x])
+                    self.lista_objetos.append(objeto)
+                elif self.alimentos[x]=="papa":
+                    objeto=Papa()
+                    objeto.aw_verduras(self.pesos[x])
+                    self.lista_objetos.append(objeto)
 
 class Cajon(Cinta_Transportadora):
     def aw_prom_kiwis(self):
@@ -104,7 +105,7 @@ class Cajon(Cinta_Transportadora):
         else:
             self.prom_z=0
         
-    def aw_prom_papa(self):
+    def aw_prom_papas(self):
         suma=0
         contador=0
         for p in range(len(self.lista_objetos)):
@@ -186,6 +187,7 @@ class DetectorAlimento:
         peso_detectado = random.choices(self.peso_alimentos, self.prob_pesos)[0]
         return {"alimento": alimento_detectado, "peso": peso_detectado}
     
+
 
     
 

@@ -1,8 +1,10 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<html>
 <head style="background-color:paleturquoise">
     <meta charset="UTF-8">
     <style>
-        tr,td {
+        table,tr,td {
         align-content: center;
         padding-top: 15px;
         padding-bottom: 15px;
@@ -22,7 +24,7 @@
         }
         .centrar {
         position: absolute;
-        top: 50%;
+        top: 60%;
         left: 50%;
         transform: translate(-50%, -50%);
         }
@@ -38,43 +40,57 @@
         .mensaje {
         color: red;
         }
+        input[type="text"],input[type="password"]{
+        width: 300px;
+        }
     </style>
 </head>
 
 <body style="background-color: paleturquoise;">
     <h1 class="centrar_element">Gestion de reclamos FI-UNER</h1>
     <h2 class="centrar_element">Para iniciar un reclamo, ingrese a su usuario:</h2>
-    <div>
-        <form action="" method="post" novalidate>
-            {{ form.hidden_tag() }}
-            <table>
-                <td class="centrar">
-            <div>
-                {{ form.email.label }}<br>
-                {{ form.email }}<br><br>
-                {% for error in form.email.errors %} 
-                <span style="color: red;">{{ error }}</span>
-                {% endfor %}
-            </div><br>
-            <div>
-                {{ form.password.label }} <br>
-                {{ form.password }}<br><br>
-                {% for error in form.password.errors %}
-                <span style="color: red;">{{ error }}</span>
-                {% endfor %}
-            </div><br>
-            <div class="centrar_element">
-                {{ form.submit() }} 
-            </div><br>
-        </form>
-    </div>
-    <div>¿No tienes cuenta?<br><br> 
-        <form action="/crear_usuario" method="GET">
-            <button type="submit" >Crear usuario</button>
-        </form>
-    </div>
-</td>
-</table>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <table class="centrar">
+            <tr>
+                <td >
+                    <div>
+                        {{ form.email.label }}<br>
+                        {{ form.email }}<br><br>
+                        {% for error in form.email.errors %} 
+                        <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </div><br>
+                    <div>
+                        {{ form.password.label }} <br>
+                        {{ form.password }}<br><br>
+                        {% for error in form.password.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </div><br>
+                    <div class="centrar_element">
+                        {{ form.submit() }} 
+                    </div><br>
+                </td>
+            </tr>
+    </form>
+            <tr>
+                <td style="text-align: center;">
+                    <div>¿No tienes cuenta?<br><br> 
+                        <form action="/crear_usuario" method="GET">
+                            <button type="submit" >Crear usuario</button>
+                        </form>    
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <form action='/jefe_departamento' method="GET">
+                        <button type="submit" >Jefe de departamento/Secretario tecnico</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
 <div class="mensaje">
 {% with messages = get_flashed_messages() %}
   {% if messages %}
@@ -87,3 +103,4 @@
 {% endwith %}
 </div>
 </body>
+</html>

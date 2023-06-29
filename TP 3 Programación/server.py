@@ -5,6 +5,7 @@ from functools import wraps
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_
 from modules.forms import LoginForm, RegisterForm
+import os
 #from werkzeug.utils import secure_filename
 #from flask_uploads import UploadSet, configure_uploads, IMAGES
 
@@ -28,7 +29,8 @@ login_manager.init_app(app)
 with app.app_context():
     db.create_all() #crea la base de datos
 
-admin_list = [1,5,6] 
+admin_list = [1,3] 
+secretario_tecnico_list = [2]
 
 def is_admin():
         if current_user.is_authenticated and current_user.id in admin_list:
@@ -40,7 +42,9 @@ def is_admin():
 def user_loader(user_id):
     user = Usuario.query.get(user_id)
     if user:
-        if user.id in admin_list:
+        if user.id in secretario_tecnico_list:
+            return Secretario_tecnico.query.get(user_id)
+        elif user.id in admin_list:
             return Jefe_departamento.query.get(user_id)  #en base al id clasifica al usuario actual en jefe o usuario final
         else:
             return Usuario_final.query.get(user_id)
@@ -52,6 +56,15 @@ def admin_only(f):
             return abort(403)
         return f(*args, **kwargs)
     return decorated_function
+
+def secretary_only(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or current_user.id not in secretario_tecnico_list:
+            return abort(403)
+        return f(*args, **kwargs)
+    return decorated_function
+
 
 @app.route("/", methods=['GET','POST'])
 def Login():
@@ -171,91 +184,87 @@ def mis_reclamos():
     mis_reclamos = Reclamo.query.filter_by(usuario_creador=current_user.email)
     return render_template('mis_reclamos.html',mis_reclamos=mis_reclamos)
 
-def departamento1_jefe_only(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        departamento = Departamento.query.filter_by(id=1).first()
-        if not current_user.is_authenticated or not current_user.email==departamento.jefe:
-            return abort(403)  # Acceso no autorizado
-        return f(*args, **kwargs)
-    return decorated_function
-
-def departamento2_jefe_only(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        departamento = Departamento.query.filter_by(id=5).first()
-        if not current_user.is_authenticated or not current_user.email==departamento.jefe:
-            return abort(403)  # Acceso no autorizado
-        return f(*args, **kwargs)
-    return decorated_function
-
-def departamento3_jefe_only(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        departamento = Departamento.query.filter_by(id=6).first()
-        if not current_user.is_authenticated or not current_user.email==departamento.jefe:
-            return abort(403)  # Acceso no autorizado
-        return f(*args, **kwargs)
-    return decorated_function
 
 
 @app.route("/jefe_departamento", methods=['GET','POST'])
-@admin_only
 def jefe_departamento():
+    login_form_d = LoginForm()
+    if  login_form_d.validate_on_submit():
+        email = login_form_d.email.data
+        password = login_form_d.password.data
+        user = Usuario.query.filter_by(email=email).first()
+        if user.id not in admin_list:
+            flash("El email que ingresaste no es de jefe de departamento, intenta de nuevo")
+            return redirect(url_for('jefe_departamento'))
+        elif not check_password_hash(user.password, password):
+            flash("Contraseña incorrecta, intenta de nuevo")
+            return redirect(url_for('jefe_departamento'))
+        elif user.id in admin_list:
+            login_user(user)
+            return redirect('/departamento')
+        elif user.id in secretario_tecnico_list:
+            login_user(user)
+            return redirect('/secretario_tecnico')
+        
+    return render_template('jefe_departamento.html',form_d=login_form_d)
+
+
+@app.route("/departamento", methods=['GET','POST'])
+@admin_only
+def departamento():
     nombre1 = "Departamento de Coordinación Académica"
     jefe_depto1 = Usuario.query.filter_by(id=1).first().email
     current_user.crear_departamento(nombre1,jefe_depto1)
     nombre2 = "Departamento de Soporte Técnico"
-    jefe_depto2 = Usuario.query.filter_by(id=5).first().email
+    jefe_depto2 = Usuario.query.filter_by(id=2).first().email
     current_user.crear_departamento(nombre2,jefe_depto2)
     nombre3 = "Departamento de Servicios Estudiantiles"
-    jefe_depto3 = Usuario.query.filter_by(id=6).first().email
-    current_user.crear_departamento(nombre3,jefe_depto3)
+    jefe_depto3 = Usuario.query.filter_by(id=3).first().email
+    current_user.crear_departamento(nombre3,jefe_depto3) #crear los departamentos
 
-    login_form_d1 = LoginForm()
-    if  login_form_d1.validate_on_submit():
-        email = login_form_d1.email.data
-        password = login_form_d1.password.data
-        user = Usuario.query.filter_by(email=email).first()
+    departamento = Departamento.query.filter_by(id=current_user.id).first()
+    return render_template('departamento.html',departamento=departamento)
 
-        if user.id not in admin_list:
-            flash("El email que ingresaste no es de jefe de departamento, intenta de nuevo")
-            return redirect(url_for('jefe_departamento'))
-        elif not check_password_hash(user.password, password):
-            flash("Contraseña incorrecta, intenta de nuevo")
-            return redirect(url_for('jefe_departamento'))
-        else:
-            return redirect('/departamento_1')
-        
-    login_form_d2 = LoginForm() #cambiar estoooo
-    if  login_form_d2.validate_on_submit():
-        email = login_form_d1.email.data
-        password = login_form_d1.password.data
-        user = Usuario.query.filter_by(email=email).first()
-
-        if user.id not in admin_list:
-            flash("El email que ingresaste no es de jefe de departamento, intenta de nuevo")
-            return redirect(url_for('jefe_departamento'))
-        elif not check_password_hash(user.password, password):
-            flash("Contraseña incorrecta, intenta de nuevo")
-            return redirect(url_for('jefe_departamento'))
-        else:
-            return redirect('/departamento_2')
-
-    return render_template('jefe_departamento.html',form_d1=login_form_d1,form_d2=login_form_d2)
-
-
-@app.route("/departamento_1", methods=['GET','POST'])
+@app.route("/analitica", methods=['GET','POST'])
 @admin_only
-@departamento1_jefe_only
-def departamento_1():
-    return render_template('departamento_1.html')
+def analitica():
+    # Eliminar la imagen existente si existe
+    if os.path.exists('static\\grafico.png'):
+        os.remove('static\\grafico.png')
+    if os.path.exists('static\\grafico_palabras_claves.png'):
+        os.remove('static\\grafico_palabras_claves.png')
+    current_user.generar_graficos()
+    return render_template('analitica.html')
 
-@app.route("/departamento_2", methods=['GET','POST'])
+@app.route("/manejar_reclamo", methods=['GET','POST'])
 @admin_only
-@departamento2_jefe_only
-def departamento_2():
-    return render_template('departamento_2.html')
+def manejar_reclamo():
+    departamento = Departamento.query.filter_by(id=current_user.id).first()
+    reclamos = Reclamo.query.filter_by(departamento_id=departamento.id).all()
+    users = Usuario.query.all()
+    usuarios = []
+    for usuario in users:
+        if usuario.id not in admin_list:
+            usuarios.append(usuario)
+    if request.method == 'POST':
+        reclamo_id = request.form.get('reclamo_id')
+        estado = request.form.get('estado')
+        print("ID del reclamo:", reclamo_id)
+        print("Nuevo estado:", estado)
+        if reclamo_id is not None and estado is not None:
+            current_user.cambiar_estado(reclamo_id,estado)
+
+    return render_template('manejar_reclamo.html',reclamos=reclamos,usuarios=usuarios)
+
+@app.route("/ayuda", methods=['GET','POST'])
+@admin_only
+def ayuda():
+    return render_template('ayuda.html')
+
+@app.route("/secretario_tecnico", methods=['GET','POST'])
+@secretary_only
+def secretario_tecnico():
+    return render_template('secretario_tecnico.html')
 
 if __name__ == '__main__':
    app.run(debug = True)

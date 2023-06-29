@@ -2,6 +2,13 @@ from flask_login import UserMixin
 from server import db
 from datetime import datetime
 from flask_login import current_user
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud
+import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+from nltk.probability import FreqDist
+
 
 class Usuario(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -30,7 +37,7 @@ class Usuario_final(Usuario):
         asunto=asunto,
         descripcion=descripcion,
         departamento=departamento,
-        estado='Pendiente',
+        estado='En proceso',
         adherente='',
         fecha=datetime.utcnow(),
         departamento_id=departamento.id
@@ -87,6 +94,90 @@ class Jefe_departamento(Usuario):
             departamento = Departamento(nombre=nombre,jefe=jefe)
             db.session.add(departamento)
             db.session.commit()
+    def generar_graficos(self):
+        reclamos_totales = 0
+        reclamos_en_proceso = 0
+        reclamos_resueltos  = 0
+        departamento = Departamento.query.filter_by(id=current_user.id).first()
+        reclamos = Reclamo.query.filter_by(departamento_id=departamento.id).all()
+        for reclamo in reclamos:
+            reclamos_totales=reclamos_totales + 1
+            if reclamo.estado == "En proceso":
+                reclamos_en_proceso = reclamos_en_proceso + 1
+            elif reclamo.estado == "Resuelto":
+                reclamos_resueltos = reclamos_resueltos + 1
+        if reclamos_en_proceso!=0:
+            porcentaje_en_proceso = (reclamos_en_proceso*100)/reclamos_totales
+        else:
+            porcentaje_en_proceso = 0
+        
+        if reclamos_resueltos!=0:
+            porcentaje_resueltos = (reclamos_resueltos*100)/reclamos_totales
+        else:
+            porcentaje_resueltos = 0
+
+        if reclamos_totales == 0:  
+            sizes = [0, 1]  
+        else:
+            sizes = [porcentaje_en_proceso, porcentaje_resueltos]
+        
+        labels = ['En proceso', 'Resueltos']
+        colors = ['yellow', 'green']
+
+        plt.switch_backend('Agg')
+        # Crear el diagrama circular
+        plt.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%')
+        plt.axis('equal')  # Para que el gráfico sea un círculo
+
+        plt.title(f'Total de reclamos: {reclamos_totales}')
+        plt.suptitle('Estadísticas de reclamos')
+        plt.savefig('static\\grafico.png')
+
+        #Obtener palabras clave
+        
+        # Descargar los recursos necesarios de NLTK (solo se requiere hacer una vez)
+        nltk.download('punkt')
+        nltk.download('stopwords')
+        
+        # Obtener los reclamos (supongamos que los tienes en una lista llamada 'reclamos')
+        lista_reclamos = []
+        for reclamo in reclamos:
+            lista_reclamos.append(reclamo.descripcion)
+
+        # Definir las palabras vacías (stop words) que deseas filtrar
+        stop_words = set(stopwords.words('spanish'))
+
+        # Procesar cada reclamo y extraer las palabras clave
+
+        keywords = []
+        for reclamo in lista_reclamos:
+            # Tokenizar el reclamo en palabras individuales
+            tokens = word_tokenize(reclamo.lower())
+            # Filtrar las palabras vacías
+            filtered_words = [word for word in tokens if word.isalnum() and word not in stop_words]
+            # Agregar las palabras clave a la lista
+            keywords.extend(filtered_words)
+
+        # Calcular la frecuencia de las palabras clave
+        if len(keywords) == 0:
+            wordcloud = WordCloud(width=800, height=400, background_color='white').generate("None")
+        else:
+            fdist = FreqDist(keywords)
+            wordcloud = WordCloud(width=800, height=400, background_color='white').generate_from_frequencies(fdist)
+
+        # Mostrar el gráfico de Word Cloud
+        plt.figure(figsize=(10, 6))
+        plt.imshow(wordcloud, interpolation='bilinear')
+        plt.axis('off')
+        plt.suptitle('Nube de palabras de los reclamos')
+        plt.savefig('static\\grafico_palabras_claves.png')
+        plt.switch_backend('TkAgg')
+    
+    def cambiar_estado(self,reclamo_id,estado):
+        reclamo = Reclamo.query.filter_by(id=reclamo_id).first()
+        reclamo.estado = estado
+        db.session.commit()
+
 
 class Departamento(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -101,6 +192,10 @@ class Departamento(db.Model):
         departamento = Departamento.query.filter_by(id=id_depto).first()
         departamento.jefe = jefe_nuevo
         db.session.commit()
+
+class Secretario_tecnico(Usuario):
+    pass
+
 
 class Clasificador_reclamos():
     @staticmethod

@@ -3,7 +3,7 @@
 <html>
     <head style="background-color:paleturquoise">
         <style>
-        tr,td {
+        table,tr,td {
         align-content: center;
         padding-top: 15px;
         padding-bottom: 15px;
@@ -18,13 +18,13 @@
         color:#01a4a7;
         align-content: center;
         background-color: paleturquoise;
-        padding: 20px 70px;
+        padding: 10px 30px;
         cursor: pointer;
-        font-size: large;
+        font-size: small;
         }
         .centrar {
         position: absolute;
-        top: 40%;
+        top: 60%;
         left: 50%;
         transform: translate(-50%, -50%);
         }
@@ -37,30 +37,22 @@
         justify-content: center;
         display: flex;
         }
-        .mensaje {
-        color: red;
-        }
         </style>
     </head>
     <body style="background-color:paleturquoise">
-        <h1 class="centrar_element">Pantalla principal</h1>
+        <h1 class="centrar_element">Analítica</h1>
         <table class="centrar">
-            <td style="text-align: center;">
-                <button onclick="location.href='/crear_reclamo'">Crear reclamo</button><br><br>
-                <button onclick="location.href='/lista_reclamos'">Lista de reclamos</button><br><br>
-                <button onclick="location.href='/mis_reclamos'">Mis reclamos</button><br><br>
-                <button onclick="location.href='/'">Salir</button>
-            </td>
+            <tr>
+                <td>
+                    <img src="static\\grafico.png" alt="Grafico porcentaje reclamos" width="500" height="400">
+                </td>
+                <td>
+                    <img src="static\\grafico_palabras_claves.png" alt="Grafico porcentaje reclamos" width="500" height="400">
+                </td>
+            </tr>
+            <tr style="text-align: center;">
+                <button onclick="location.href='/departamento'">Volver</button>
+            </tr>
         </table>
-        <div class="mensaje">
-            {% with messages = get_flashed_messages() %}
-              {% if messages %}
-                <ul class="flash-messages">
-                  {% for message in messages %}
-                    {{ message }}
-                  {% endfor %}
-                </ul>
-              {% endif %}
-            {% endwith %}
-            </div>
     </body>
+</html>

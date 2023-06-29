@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request
 from modules.classes import *
 import random
+
+
 lista_objetos = []
 aw_promedio_kiwi = 0
 aw_promedio_manzana = 0
@@ -29,7 +31,7 @@ def home():
         cajon.crear_objetos()
         cajon.aw_prom_kiwis()
         cajon.aw_prom_manzanas()
-        cajon.aw_prom_papa()
+        cajon.aw_prom_papas()
         cajon.aw_prom_zanahorias()
         cajon.aw_prom_frutas()
         cajon.aw_prom_verduras()
