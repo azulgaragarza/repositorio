@@ -2,6 +2,7 @@
 <html lang="en">
 <html>
     <head style="background-color:paleturquoise">
+        <meta charset="utf-8">
         <style>
         tr,td {
         align-content: center;
@@ -18,17 +19,11 @@
         color:#01a4a7;
         align-content: center;
         background-color: paleturquoise;
-        padding: 20px 70px;
+        padding: 10px 30px;
         cursor: pointer;
-        font-size: large;
+        font-size: small;
         }
-        .centrar {
-        position: absolute;
-        top: 40%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        }
-        h1 {
+        h1,h2,pre {
         color:black;
         font-family:Arial, Helvetica, sans-serif;
         }
@@ -36,15 +31,20 @@
         align-items: center;
         justify-content: center;
         display: flex;
+        text-align: center;
+        }
+        .contenedor {
+        width: 90vw;
+        height: 90vh;
+        overflow: auto;
+        word-break: break-all;
         }
         </style>
     </head>
     <body style="background-color:paleturquoise">
+        <button onclick="location.href='/departamento'">Volver</button>
         <h1 class="centrar_element">Ayuda</h1>
-        <table class="centrar">
-            <td>
-        
-            </td>
-        </table>
+        <h2 class="centrar_element">Aquí encontrará ayuda sobre como funciona el software</h2>
+        <pre class="centrar_element">{{ contenido }}</pre>
     </body>
 </html>

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, flash, url_for, abort
+from flask import Flask, render_template, redirect, request, flash, url_for, abort, send_file, make_response
 from flask_login import *
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
@@ -29,8 +29,8 @@ login_manager.init_app(app)
 with app.app_context():
     db.create_all() #crea la base de datos
 
-admin_list = [1,3] 
-secretario_tecnico_list = [2]
+admin_list = [1,2,3] 
+
 
 def is_admin():
         if current_user.is_authenticated and current_user.id in admin_list:
@@ -42,9 +42,7 @@ def is_admin():
 def user_loader(user_id):
     user = Usuario.query.get(user_id)
     if user:
-        if user.id in secretario_tecnico_list:
-            return Secretario_tecnico.query.get(user_id)
-        elif user.id in admin_list:
+        if user.id in admin_list:
             return Jefe_departamento.query.get(user_id)  #en base al id clasifica al usuario actual en jefe o usuario final
         else:
             return Usuario_final.query.get(user_id)
@@ -53,14 +51,6 @@ def admin_only(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not current_user.is_authenticated or current_user.id not in admin_list:
-            return abort(403)
-        return f(*args, **kwargs)
-    return decorated_function
-
-def secretary_only(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if not current_user.is_authenticated or current_user.id not in secretario_tecnico_list:
             return abort(403)
         return f(*args, **kwargs)
     return decorated_function
@@ -132,7 +122,7 @@ def crear_reclamo():
         # Buscar reclamos similares en la base de datos
         reclamos_similares = Reclamo.query.filter(
             or_(
-                Reclamo.asunto.ilike(f'%{asunto}%'),  # Búsqueda insensible a mayúsculas y minúsculas
+                Reclamo.asunto.ilike(f'%{asunto}%'), 
                 Reclamo.descripcion.ilike(f'%{desc_reclamo}%')
             )
         ).all()
@@ -147,7 +137,6 @@ def crear_reclamo():
 @login_required
 def adherirse_reclamo(reclamo_id):
     adherido_reclamo = current_user.adherirse_reclamo(reclamo_id)
-
     if adherido_reclamo == True:
         flash("Adherido a reclamo existente.")
     elif adherido_reclamo == False:
@@ -162,10 +151,11 @@ def adherirse_reclamo(reclamo_id):
 def lista_reclamos():
     detalles = {}
     departamentos = Departamento.query.all()
-    departamento_id = request.args.get('departamento_id',default=None)  # Obtener el ID del departamento seleccionado en el filtro
-    reclamos_pendientes = Reclamo.query.filter_by(estado='Pendiente') # Obtener todos los reclamos pendientes
+    departamento_id = request.args.get('departamento_id',default=None)  
+    reclamos_pendientes = Reclamo.query.filter_by(estado='Pendiente') 
     if departamento_id:
-        reclamos_pendientes = reclamos_pendientes.filter(Reclamo.departamento_id == departamento_id)  # Aplicar filtro por departamento
+        reclamos_pendientes = reclamos_pendientes.filter(Reclamo.departamento_id == departamento_id) 
+
     reclamos = reclamos_pendientes.all()
 
     if request.method == 'POST':
@@ -182,8 +172,8 @@ def lista_reclamos():
 @login_required
 def mis_reclamos():
     mis_reclamos = Reclamo.query.filter_by(usuario_creador=current_user.email)
-    return render_template('mis_reclamos.html',mis_reclamos=mis_reclamos)
-
+    departamentos = Departamento.query.all()
+    return render_template('mis_reclamos.html',mis_reclamos=mis_reclamos, departamentos=departamentos)
 
 
 @app.route("/jefe_departamento", methods=['GET','POST'])
@@ -202,9 +192,6 @@ def jefe_departamento():
         elif user.id in admin_list:
             login_user(user)
             return redirect('/departamento')
-        elif user.id in secretario_tecnico_list:
-            login_user(user)
-            return redirect('/secretario_tecnico')
         
     return render_template('jefe_departamento.html',form_d=login_form_d)
 
@@ -215,13 +202,12 @@ def departamento():
     nombre1 = "Departamento de Coordinación Académica"
     jefe_depto1 = Usuario.query.filter_by(id=1).first().email
     current_user.crear_departamento(nombre1,jefe_depto1)
-    nombre2 = "Departamento de Soporte Técnico"
+    nombre2 = "Departamento de Secretaría Técnica"
     jefe_depto2 = Usuario.query.filter_by(id=2).first().email
     current_user.crear_departamento(nombre2,jefe_depto2)
     nombre3 = "Departamento de Servicios Estudiantiles"
     jefe_depto3 = Usuario.query.filter_by(id=3).first().email
     current_user.crear_departamento(nombre3,jefe_depto3) #crear los departamentos
-
     departamento = Departamento.query.filter_by(id=current_user.id).first()
     return render_template('departamento.html',departamento=departamento)
 
@@ -239,8 +225,12 @@ def analitica():
 @app.route("/manejar_reclamo", methods=['GET','POST'])
 @admin_only
 def manejar_reclamo():
+    departamentos = Departamento.query.all()
     departamento = Departamento.query.filter_by(id=current_user.id).first()
-    reclamos = Reclamo.query.filter_by(departamento_id=departamento.id).all()
+    if current_user.id == 2:
+        reclamos = Reclamo.query.all()
+    else:
+        reclamos = Reclamo.query.filter_by(departamento_id=departamento.id).all()
     users = Usuario.query.all()
     usuarios = []
     for usuario in users:
@@ -249,22 +239,64 @@ def manejar_reclamo():
     if request.method == 'POST':
         reclamo_id = request.form.get('reclamo_id')
         estado = request.form.get('estado')
-        print("ID del reclamo:", reclamo_id)
-        print("Nuevo estado:", estado)
         if reclamo_id is not None and estado is not None:
             current_user.cambiar_estado(reclamo_id,estado)
+    return render_template('manejar_reclamo.html',reclamos=reclamos,usuarios=usuarios,departamento=departamento,deptos=departamentos)
 
-    return render_template('manejar_reclamo.html',reclamos=reclamos,usuarios=usuarios)
+@app.route("/generar_reporte", methods=['GET','POST'])
+@admin_only
+def generar_reporte():
+    reclamos_totales = 0
+    reclamos_invalidos = 0
+    reclamos_en_proceso = 0
+    reclamos_resueltos = 0
+    reclamos_pendientes = 0
+    usuario = Usuario.query.filter_by(id=current_user.id).first()
+    departamento = Departamento.query.filter_by(jefe=current_user.email).first()
+    reclamos = Reclamo.query.filter_by(departamento_id=departamento.id).all()
+    for reclamo in reclamos:
+        reclamos_totales = reclamos_totales+1
+        if reclamo.estado == 'Resuelto':
+            reclamos_resueltos=reclamos_resueltos+1
+        elif reclamo.estado == 'En proceso':
+            reclamos_en_proceso=reclamos_en_proceso+1
+        elif reclamo.estado == 'Invalido':
+            reclamos_invalidos=reclamos_invalidos+1
+        elif reclamo.estado == 'Pendiente':
+            reclamos_pendientes=reclamos_pendientes+1
+    fecha_hora = datetime.utcnow()
+    fecha = fecha_hora.strftime('%Y-%m-%d')
+    if os.path.exists('static\\grafico.png'):
+        os.remove('static\\grafico.png')
+    if os.path.exists('static\\grafico_palabras_claves.png'):
+        os.remove('static\\grafico_palabras_claves.png')
+    current_user.generar_graficos()
+    return render_template('generar_reporte.html', usuario=usuario, departamento=departamento, reclamos=reclamos, reclamos_totales=reclamos_totales, reclamos_resueltos=reclamos_resueltos, reclamos_en_proceso=reclamos_en_proceso, reclamos_invalidos=reclamos_invalidos, reclamos_pendientes=reclamos_pendientes, fecha=fecha)
+
+
+@app.route("/derivar_reclamo/<int:reclamo_id>", methods=['GET','POST'])
+@admin_only
+def derivar_reclamo(reclamo_id):
+    reclamo = Reclamo.query.get(reclamo_id)
+    departamentos = Departamento.query.all()
+    if request.method == 'POST':
+        departamento = request.form.get('departamento')
+        current_user.derivar_reclamo(reclamo_id,departamento)
+    return render_template('derivar_reclamo.html',reclamo=reclamo,departamentos=departamentos)
 
 @app.route("/ayuda", methods=['GET','POST'])
 @admin_only
 def ayuda():
-    return render_template('ayuda.html')
+    with open("docs//ayuda_jefe.txt",'r', encoding='utf-8') as texto_j:
+        contenido_j = texto_j.read()
+    with open("docs//ayuda_secretario.txt",'r', encoding='utf-8') as textos_s:
+        contenido_s = textos_s.read()
+    if current_user.id !=2:
+        contenido=contenido_j
+    else:
+        contenido = contenido_s
+    return render_template('ayuda.html',contenido=contenido)
 
-@app.route("/secretario_tecnico", methods=['GET','POST'])
-@secretary_only
-def secretario_tecnico():
-    return render_template('secretario_tecnico.html')
 
 if __name__ == '__main__':
    app.run(debug = True)

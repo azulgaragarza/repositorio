@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+    <head style="background-color:white">
+        <meta charset="utf-8">
+        <style>
+        table,td,tr {
+        align-content: center;
+        padding-top: 10px;
+        padding-bottom: 15px;
+        padding-right:20px;
+        padding-left: 20px;
+        border: 1px solid black;
+        border-collapse: collapse;
+        width: 80%;
+        }
+        .table2{
+        align-content: center;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        padding-right:30px;
+        padding-left: 30px;
+        border: 1px solid black;
+        border-collapse: collapse;
+        width: 60%;
+        }
+        button{
+        border:1px solid black;
+        border-style: double;
+        color: black;
+        align-content: center;
+        background-color: white;
+        padding: 10px 30px;
+        cursor: pointer;
+        font-size: small;
+        }
+        .centrar {
+        position: absolute;
+        top: 60%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        }
+        h1,h2,h3,h4 {
+        color:black;
+        font-family:Arial, Helvetica, sans-serif;
+        }
+        .centrar_element {
+        align-items: center;
+        justify-content: center;
+        display: flex;
+        }
+        .table-container {
+        display: flex;
+        justify-content: center;
+        }
+        .row {
+        display: table-row;
+        }
+        .column {
+        display: table-cell;
+        padding-right: 20px;
+        }
+        </style>
+    </head>
+    <body style="background-color:white">
+        <div class="table-container">
+            <table>
+                <td>
+                    <img src="static\\Logo.png" alt="Logo_uner" width="200" height="100">
+                    <h2 class="centrar_element">Facultad de ingeniería</h2>
+                    <h3 class="centrar_element"><u>REPORTE DE RECLAMOS</u></h3><br>
+                    <p>Departamento: {{ departamento.nombre }}</p>
+                    <p>Jefe de departamento: {{ usuario.apellido }}, {{ usuario.name }} </p>
+                    <p>Fecha: {{ fecha }}</p>
+                    <table class="table2">
+                        <tr>
+                            <td style="white-space: nowrap;"><b>ID reclamo</b></td>
+                            <td><b>Asunto</b></td>
+                            <td><b>Descripcion</b></td>
+                            <td style="white-space: nowrap;"><b>Usuario creador</b></td>
+                            <td><b>Adherentes</b></td>
+                            <td><b>Estado</b></td>
+                            <td style="white-space: nowrap;"><b>Fecha y hora</b></td>
+                        </tr>
+                        {% for reclamo in reclamos %}
+                            <tr>
+                                <td>{{ reclamo.id }}</td>
+                                <td>{{ reclamo.asunto }}</td>
+                                <td>{{ reclamo.descripcion }}</td>
+                                <td>{{ reclamo.usuario_creador }}</td>
+                                <td>{{ reclamo.adherente }}</td>
+                                <td>{{ reclamo.estado }}</td>
+                                <td>{{ reclamo.fecha }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                    <h4><b>OBSERVACIONES:</b></h4>
+                    <div>
+                        <div class="column">
+                          <div class="row"><p>Total de reclamos: {{ reclamos_totales }}</p></div>
+                          <div class="row"><p>Reclamos resueltos: {{ reclamos_resueltos }}</p></div>
+                          <div class="row"><p>Reclamos en proceso: {{ reclamos_en_proceso }}</p></div>
+                        </div>
+                        <div class="column"></div>
+                        <div class="column"></div>
+                        <div class="column"></div>
+                        <div class="column">
+                          <div class="row"><p>Reclamos pendientes: {{ reclamos_pendientes }}</p></div>
+                          <div class="row"><p>Reclamos inválidos: {{ reclamos_invalidos }}</p></div>
+                        </div>
+                      </div><br>
+                      <h4><b>ESTADÍSTICA:</b></h4><br>
+                      <div style="text-align: center;">
+                        <img src="static\\grafico.png" alt="grafico_circular" width="500" height="400">
+                        <img src="static\\grafico_palabras_claves.png" alt="Grafico porcentaje reclamos" width="500" height="400">
+                      </div>
+                </td>
+            </table>
+        </div><br><br>
+    </body>
+</html>

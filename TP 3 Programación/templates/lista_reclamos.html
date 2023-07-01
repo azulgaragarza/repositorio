@@ -11,6 +11,10 @@
         padding-left: 40px;
         border: 1px solid #01a4a7;
         border-collapse: collapse;
+        text-align: center;
+        }
+        table{
+        max-width: 100%;
         }
         button{
         border:1px solid #01a4a7;
@@ -22,12 +26,6 @@
         cursor: pointer;
         font-size:small;
         }
-        .centrar {
-        position: absolute;
-        top: 20%;
-        left: 3%;
-        right: 15%;
-        }
         h1 {
         color:black;
         font-family:Arial, Helvetica, sans-serif;
@@ -36,6 +34,10 @@
         align-items: center;
         justify-content: center;
         display: flex;
+        }
+        .table-container {
+        display: flex;
+        justify-content: center;
         }
         .mensaje {
         color: red;
@@ -57,42 +59,55 @@
             <button type="submit">Filtrar</button>
             </div>
         </form>
-        <table class="centrar">
-            {% for reclamo in reclamos %}
-            <tr>
-                <td>Asunto: {{ reclamo.asunto }} </td> 
-                <td>Descripción: {{ reclamo.descripcion }}</td>
-                <form action="{{ url_for('lista_reclamos') }}" method="post">
-                <input type="hidden" name="id" value="{{ reclamo.id }}">
-                <input type="hidden" name="creador" value="{{ reclamo.usuario_creador }}">
-                <input type="hidden" name="fecha" value="{{ reclamo.fecha }}">
-                <input type="hidden" name="estado" value="{{ reclamo.estado }}">
-                <input type="hidden" name="adherente" value="{{ reclamo.adherente }}">
-                <input type="hidden" name="departamento" value="{{ reclamo.departamento.nombre }}">
-                
-                <td><input type="submit" name="submit-btn" value="Mostrar más"></td>
-                </form>
-                {% if detalles!={} and reclamo.id == detalles['id'] %}
-                    <tr>
-                        <td> Id de reclamo: {{ detalles['id'] }} </td>
-                        <td> Creador: {{ detalles['creador'] }} </td>
-                        <td> Fecha de creacion: {{ detalles['fecha'] }} </td>
-                        <td> Estado: {{ detalles['estado'] }} </td>
-                        <td> Adherentes: {{ detalles['adherente'] }} </td>
-                        <td>{{ detalles['departamento'] }} </td>
-                        {% if user not in detalles['adherente'] and user!= detalles['creador'] %}
-                            <td>
-                                <form action="{{ url_for('adherirse_reclamo', reclamo_id=reclamo.id) }}" method="post">
-                                    <input type="submit" name="submit-btn" value="Adherirse a reclamo">
-                                </form>
-                            </td>
-                        {% endif %}
-                    </tr>
-                {% endif %}
-            </tr>
-            {% endfor %}
-            <td><button onclick="location.href='/pantalla_principal'">Volver</button></td>
-        </table>
+        <button onclick="location.href='/pantalla_principal'">Volver</button>
+        <div class="table-container">
+          <table>
+              <tr>
+                <td><b>Asunto</b></td>
+                <td><b>Descripcion</b></td>
+                <td><b>Ver más</b></td>
+              </tr>
+              {% for reclamo in reclamos %}
+              <tr>
+                  <td>{{ reclamo.asunto }} </td> 
+                  <td>{{ reclamo.descripcion }}</td>
+                  <form action="{{ url_for('lista_reclamos') }}" method="post">
+                  <input type="hidden" name="id" value="{{ reclamo.id }}">
+                  <input type="hidden" name="creador" value="{{ reclamo.usuario_creador }}">
+                  <input type="hidden" name="fecha" value="{{ reclamo.fecha }}">
+                  <input type="hidden" name="estado" value="{{ reclamo.estado }}">
+                  <input type="hidden" name="adherente" value="{{ reclamo.adherente }}">
+                  {% for departamento in departamentos %}
+                    {% if departamento.id == reclamo.departamento_id %}
+                      <input type="hidden" name="departamento" value="{{ departamento.nombre }}">
+                    {% endif %}
+                    {% if reclamo.departamento_id == None %}
+                      <input type="hidden" name="departamento" value="En espera de asignación">
+                    {% endif %}
+                  {% endfor %}
+                  <td><input type="submit" name="submit-btn" value="Mostrar más"></td>
+                  </form>
+                  {% if detalles!={} and reclamo.id == detalles['id'] %}
+                      <tr>
+                          <td> Id de reclamo: {{ detalles['id'] }} </td>
+                          <td> Creador: {{ detalles['creador'] }} </td>
+                          <td> Fecha de creacion: {{ detalles['fecha'] }} </td>
+                          <td> Estado: {{ detalles['estado'] }} </td>
+                          <td> Adherentes: {{ detalles['adherente'] }} </td>
+                          <td> Departamento: {{ detalles['departamento'] }} </td>
+                          {% if user not in detalles['adherente'] and user!= detalles['creador'] %}
+                              <td>
+                                  <form action="{{ url_for('adherirse_reclamo', reclamo_id=reclamo.id) }}" method="post">
+                                      <input type="submit" name="submit-btn" value="Adherirse a reclamo">
+                                  </form>
+                              </td>
+                          {% endif %}
+                      </tr>
+                  {% endif %}
+              </tr>
+              {% endfor %}
+          </table>
+        </div>
         <div class="mensaje">
             {% with messages = get_flashed_messages() %}
               {% if messages %}

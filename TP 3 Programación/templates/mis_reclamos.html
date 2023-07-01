@@ -11,6 +11,10 @@
         padding-left: 50px;
         border: 1px solid #01a4a7;
         border-collapse: collapse;
+        text-align: center;
+        }
+        table{
+        max-width: 100%;
         }
         button{
         border:1px solid #01a4a7;
@@ -22,13 +26,6 @@
         cursor: pointer;
         font-size: small;
         }
-        .centrar {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        
-        }
         h1 {
         color:black;
         font-family:Arial, Helvetica, sans-serif;
@@ -38,34 +35,46 @@
         justify-content: center;
         display: flex;
         }
+        .table-container {
+        display: flex;
+        justify-content: center;
+        }
         </style>
     </head>
     <body style="background-color:paleturquoise">
         <h1 class="centrar_element">Mis reclamos</h1>
-        <table class="centrar">
-            <tr>
-                <td>ID</td>
-                <td>Asunto</td>
-                <td>Descripcion</td>
-                <td>Estado</td>
-                <td>Fecha de creación</td>
-                <td>Adherentes</td>
-                <td>Departamento</td>
-
-            </tr>
-            {% for reclamo in mis_reclamos %}
+        <button onclick="location.href='/pantalla_principal'">Volver</button>
+        <div class="table-container">
+            <table>
                 <tr>
-                    <td> {{ reclamo.id }} </td>
-                    <td> {{ reclamo.asunto }} </td>
-                    <td> {{ reclamo.descripcion }} </td>
-                    <td> {{ reclamo.estado }} </td>
-                    <td> {{ reclamo.fecha }} </td>
-                    <td> {{ reclamo.adherente }} </td>
-                    <td> {{ reclamo.departamento.nombre }} </td>
+                    <td><b>ID</b></td>
+                    <td><b>Asunto</b></td>
+                    <td><b>Descripcion</b></td>
+                    <td><b>Estado</b></td>
+                    <td><b>Fecha de creación</b></td>
+                    <td><b>Adherentes</b></td>
+                    <td><b>Departamento</b></td>
+
                 </tr>
-            {% endfor %}    
-            <tr>
-                <td><button onclick="location.href='/pantalla_principal'">Volver</button></td>
-            </tr>
-        </table>
+                {% for reclamo in mis_reclamos %}
+                    <tr>
+                        <td> {{ reclamo.id }} </td>
+                        <td> {{ reclamo.asunto }} </td>
+                        <td> {{ reclamo.descripcion }} </td>
+                        <td> {{ reclamo.estado }} </td>
+                        <td> {{ reclamo.fecha }} </td>
+                        <td> {{ reclamo.adherente }} </td>
+                        {% if reclamo.departamento_id == None %}
+                                <td>En espera de asignación</td>
+                        {% else %}
+                            {% for departamento in departamentos %}
+                                {% if departamento.id == reclamo.departamento_id %}
+                                    <td> {{ departamento.nombre }} </td>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </tr>
+                {% endfor %}    
+            </table>
+        </div>
     </body>

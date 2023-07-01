@@ -1,0 +1,12 @@
+Como jefe de departamento, el software te proporciona la opcion de manejar los reclamos en la pestaña "Manejar reclamo", dentro de la misma, 
+se proporcionan los datos de cada reclamo perteneciente a tu departamento, tales como:ID del reclamo, ID del usuario creador, ID de los usuarios adheridos, 
+la fecha y hora en la que fueron realizados, departamento (debido a que solo puedes ver los reclamos pertenecientes a tu departamento, esta columna es siempre la misma)
+y el estado en el que está el reclamo (el cual puedes modificar una vez el reclamo sea analizado).
+Todos estos datos, junto con la base de datos, te servirán para la resolucion de los reclamos.
+Al tocar el botón "Generar reporte", automáticamente se genera un reporte en formato html que puedes visualizar y descargar tanto en formato HTML como en formato PDF.
+Dentro del mismo se deja constancia de todos los reclamos dentro del departamento hasta la fecha, con todos sus datos y estadísticas.
+Dentro de la pestaña "Analítica" observarás dos gráficos que se renuevan cada vez que accedes a la página. 
+El primero, es un gráfico circular que representa un procentaje de cuantos reclamos resueltos y en proceso tiene el departamento, 
+dentro del cual también se incluye un recuento de cuántos reclamos en total tiene el departamento (incluyendo los clasificados como inválidos y pendientes) y un 
+recuento de los reclamos resueltos y en proceso sumados.
+El segundo, es un gráfico de las palabras claves mas frecuentes entre los reclamos asignados al departamento, las palabras mas frecuentes se observan de mayor tamaño.

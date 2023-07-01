@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+    <head style="background-color:paleturquoise">
+        <style>
+        table,tr,td {
+        align-content: center;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        padding-right:70px;
+        padding-left: 70px;
+        border: 1px solid #01a4a7;
+        border-collapse: collapse;
+        text-align: center;
+        }
+        table{
+        max-width: 100%;
+        }
+        button{
+        border:1px solid #01a4a7;
+        border-style: double;
+        color:#01a4a7;
+        align-content: center;
+        background-color: paleturquoise;
+        padding: 10px 30px;
+        cursor: pointer;
+        font-size: small;
+        }
+        h1 {
+        color:black;
+        font-family:Arial, Helvetica, sans-serif;
+        }
+        .centrar_element {
+        align-items: center;
+        justify-content: center;
+        display: flex;
+        }
+        .table-container {
+        display: flex;
+        justify-content: center;
+        }
+        </style>
+    </head>
+    <body style="background-color:paleturquoise">
+        <h1 class="centrar_element">Derivar reclamo</h1>
+        <div class="table-container">
+            <table>
+                <tr>
+                    <td><b>ID del reclamo</b></td>
+                    <td><b>Asunto</b></td>
+                    <td><b>Descripcion</b></td>
+                    <td><b>Estado</b></td>
+                    <td><b>Departamento</b></td>
+                    <td><b>Derivar a departamento</b></td>
+                </tr>
+                <tr>
+                    <td>{{ reclamo.id }}</td>
+                    <td>{{ reclamo.asunto }}</td>
+                    <td>{{ reclamo.descripcion }}</td>
+                    <td>{{ reclamo.estado }}</td>
+                    {% for departamento in departamentos %}
+                        {% if departamento.id == reclamo.departamento_id %}
+                            <td>{{ departamento.nombre }}</td>
+                        {% endif %}
+                    {% endfor %}
+                    {% if reclamo.departamento_id == None %}
+                        <td>En espera de asignación</td>
+                    {% endif %}
+                    <td>
+                        <form action="{{ url_for('derivar_reclamo',reclamo_id=reclamo.id) }}" method="post">
+                            <select name="departamento" id="departamento">
+                                {% for departamento in departamentos %}
+                                    <option value="{{ departamento.id }}">{{ departamento.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="submit">Derivar</button>
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <button onclick="location.href='/manejar_reclamo'">Volver</button>
+    </body>
+</html>
