@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+    <head style="background-color:white">
+        <meta charset="utf-8">
+        <style>
+        table {
+        align-content: center;
+        padding-top: 10px;
+        padding-bottom: 15px;
+        padding-right:30px;
+        padding-left: 30px;
+        border: 1px solid black;
+        border-collapse: collapse;
+        width: 60%;
+        }
+        .td {
+        padding-right:60px;
+        padding-left: 60px;
+        }
+        .centrar{
+        text-align: center;
+        }
+        td,tr{
+        align-content: center;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        padding-right: 4px;
+        padding-left: 4px;
+        border: 1px solid black;
+        border-collapse: collapse;
+        }
+        .table2{
+        align-content: center;
+        word-wrap: break-word;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        padding-right:10px;
+        padding-left: 10px;
+        border: 1px solid black;
+        border-collapse: collapse;
+        width: 50%;
+        }
+        h1,h2,h3,h4 {
+        color:black;
+        font-family:Arial, Helvetica, sans-serif;
+        }
+        .centrar_element {
+        align-items: center;
+        justify-content: center;
+        display: flex;
+        }
+        .table-container {
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        }
+        .row {
+        display: table-row;
+        }
+        .column {
+        display: table-cell;
+        padding-right: 20px;
+        }
+        </style>
+    </head>
+    <body style="background-color:white">
+        <div class="table-container">
+            <table>
+                <td class="td">
+                    <img src="static/Logo.png" alt="Logo_uner" width="200" height="100">
+                    <h2 class="centrar_element">Facultad de ingeniería</h2>
+                    <h3 class="centrar_element"><u>REPORTE DE RECLAMOS</u></h3><br>
+                    <p>Departamento: Departamento de Coordinación Académica</p>
+                    <p>Jefe de departamento: Garagarza, Azul </p>
+                    <p>Fecha: 2023-07-04</p>
+                    <table class="table2">
+                        <tr>
+                            <td><b>ID reclamo</b></td>
+                            <td class="centrar"><b>Asunto</b></td>
+                            <td><b>Descripcion</b></td>
+                            <td class="centrar"><b>Usuario creador</b></td>
+                            <td class="centrar"><b>Adherentes</b></td>
+                            <td class="centrar"><b>Estado</b></td>
+                            <td><b>Fecha y hora</b></td>
+                        </tr>
+                        
+                            <tr>
+                                <td class="centrar">1</td>
+                                <td>Mala organizacion</td>
+                                <td>tuve problemas con la organizacion de la materia</td>
+                                <td>joelgaragarza1234@gmail.com</td>
+                                <td>fgaragarza@gmail.com</td>
+                                <td>Pendiente</td>
+                                <td>2023-06-28 17:15:27</td>
+                            </tr>
+                        
+                            <tr>
+                                <td class="centrar">2</td>
+                                <td>Entrega de calificaciones lenta</td>
+                                <td>La entrega de resultados de examenes es lenta </td>
+                                <td>joelgaragarza1234@gmail.com</td>
+                                <td></td>
+                                <td>En proceso</td>
+                                <td>2023-06-28 17:15:52</td>
+                            </tr>
+                        
+                            <tr>
+                                <td class="centrar">3</td>
+                                <td>Plan de estudio</td>
+                                <td>no encuentro el plan de estudio</td>
+                                <td>joelgaragarza1234@gmail.com</td>
+                                <td>fgaragarza@gmail.com</td>
+                                <td>Resuelto</td>
+                                <td>2023-06-28 17:16:42</td>
+                            </tr>
+                        
+                            <tr>
+                                <td class="centrar">5</td>
+                                <td>no puedo inscribirme a examenes</td>
+                                <td>no me deja inscribirme a examenes </td>
+                                <td>joelgaragarza1234@gmail.com</td>
+                                <td></td>
+                                <td>Pendiente</td>
+                                <td>2023-07-04 20:34:01.937750</td>
+                            </tr>
+                        
+                    </table>
+                    <h4><b>OBSERVACIONES:</b></h4>
+                    <div>
+                        <div class="column">
+                          <div class="row"><p>Total de reclamos: 4</p></div>
+                          <div class="row"><p>Reclamos resueltos: 1</p></div>
+                          <div class="row"><p>Reclamos en proceso: 1</p></div>
+                        </div>
+                        <div class="column"></div>
+                        <div class="column"></div>
+                        <div class="column"></div>
+                        <div class="column">
+                          <div class="row"><p>Reclamos pendientes: 2</p></div>
+                          <div class="row"><p>Reclamos inválidos: 0</p></div>
+                        </div>
+                      </div><br>
+                      <h4><b>ESTADÍSTICA:</b></h4><br>
+                      <div style="text-align: center;">
+                        <img src="static/grafico.png" alt="grafico_circular" width="500" height="400">
+                        <img src="static/grafico_palabras_claves.png" alt="Grafico porcentaje reclamos" width="500" height="400">
+                      </div>
+                </td>
+            </table>
+        </div><br><br>
+    </body>
+</html>

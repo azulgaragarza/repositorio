@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
-from modules.classes import *
+from modules.class_cajon import Cajon
+from modules.class_detector_alimentos import DetectorAlimento
 import random
 
 
@@ -19,15 +20,8 @@ def home():
     mensaje=""
     if request.method == 'POST':
         cant_alimentos=request.form["cant_alimentos"]
-        random.seed(1)
-        sensor = DetectorAlimento()
-        lista_pesos = []
-        lista_alimentos = []
-        for i in range(int(cant_alimentos)):
-            lista_pesos.append(sensor.detectar_alimento()["peso"])
-            lista_alimentos.append(sensor.detectar_alimento()["alimento"])
-
-        cajon = Cajon(lista_pesos,lista_alimentos)
+        cajon = Cajon()
+        cajon.crear_listas(cant_alimentos)
         cajon.crear_objetos()
         cajon.aw_prom_kiwis()
         cajon.aw_prom_manzanas()

@@ -2,13 +2,14 @@ import matplotlib.pyplot as plt
 import csv
 listaG=[]
 listaN=[]
-with open("D:\\Azul\\repositorio\\TP 1 Programación\\ej 1\\google.csv") as f:
+
+with open("docs\\google.csv") as f:
     n=csv.reader(f,delimiter=";")
     for i in n:
         listaG.append(i[0].split(","))
 listaG.remove(listaG[0])
 
-with open("D:\\Azul\\repositorio\\TP 1 Programación\\ej 1\\nike.csv") as l:
+with open("docs\\nike.csv") as l:
     s=csv.reader(l,delimiter=";")
     for x in s:
         listaN.append(x[0].split(","))

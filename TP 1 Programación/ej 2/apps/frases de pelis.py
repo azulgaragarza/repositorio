@@ -20,9 +20,9 @@ Elige una opción
 opcion = input(OPCIONES)
 import random
 import datetime
-ruta="D:\\Azul\\repositorio\\TP 1 Programación\\ej 2\\apps\\"
+
 def opcionE(x):
-    with open(ruta+"opciones_elegidas.txt","a",encoding="utf-8") as elecciones:
+    with open("apps\\opciones_elegidas.txt","a",encoding="utf-8") as elecciones:
         fecha=datetime.datetime.now()
         elecciones.write(str(x)+" "+str(fecha)+"\n")
     return 
@@ -30,7 +30,7 @@ listaEntera=[] #tiene frases y pelis
 listaP=[] #tiene solo pelis
 listaP2=[] #tiene pelis sin repeticion
 
-with open(ruta+"frases_de_peliculas.txt",encoding="utf-8") as archi:
+with open("apps\\frases_de_peliculas.txt",encoding="utf-8") as archi:
     linea=archi.readlines()
     for i in linea:
         listaEntera.append(i.strip().split(";"))
@@ -80,7 +80,7 @@ while opcion!="5":
     if opcion=="3":
         opcionE(opcion)
         lista_elecciones=[]
-        with open(ruta+"opciones_elegidas.txt") as elecciones:
+        with open("apps\\opciones_elegidas.txt") as elecciones:
             l=elecciones.readlines()
             for a in l:
                 lista_elecciones.append(a.strip().split(" "))
@@ -90,7 +90,7 @@ while opcion!="5":
         opcion = input(OPCIONES)
     
     if opcion=="4":
-        with open(ruta+"opciones_elegidas.txt","w") as elecciones:
+        with open("apps\\opciones_elegidas.txt","w") as elecciones:
             elecciones.write("")
         opcion = input(OPCIONES)
 if opcion=="5":

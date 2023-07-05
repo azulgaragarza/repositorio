@@ -1,6 +1,5 @@
 def crear_lista(listaEntera):
-    ruta="D:\\Azul\\repositorio\\TP 1 Programación\\ej 2\\apps\\frases_de_peliculas.txt"
-    with open(ruta,encoding="utf-8") as archi:
+    with open("apps\\frases_de_peliculas.txt",encoding="utf-8") as archi:
         linea=archi.readlines()
         for i in linea:
             listaEntera.append(i.strip().split(";"))
@@ -27,15 +26,14 @@ def pelis_frase(listaEntera):
     matriz.append(PeliCorrecta) #se agrega un quinto elemento que contiene siempre la respuesta correcta
     return matriz
 
-ruta="D:\\Azul\\repositorio\\TP 1 Programación\\ej 2\\data\\"
 def guardar_nombre_en_archivo(nombre):  
     import datetime
-    with open(ruta+"nombres.txt", "a") as archi:
+    with open("data\\nombres.txt", "a") as archi:
         fecha=datetime.datetime.now()
         archi.write(str(nombre)+" "+str(fecha))
 
 def escribir_mensaje(Respuesta,Correcta,intentos):
-    with open(ruta+"mensaje.txt","w") as mensaje:
+    with open("data\\mensaje.txt","w") as mensaje:
         suma=0
         if Respuesta==Correcta:
             mens="Respuesta correcta :)"

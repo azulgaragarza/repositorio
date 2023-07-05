@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, flash, url_for, abort, send_file, make_response
+from flask import Flask, render_template, redirect, request, flash, url_for, abort, Response
 from flask_login import *
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
@@ -6,17 +6,16 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_
 from modules.forms import LoginForm, RegisterForm
 import os
-#from werkzeug.utils import secure_filename
-#from flask_uploads import UploadSet, configure_uploads, IMAGES
+from pdfcrowd import HtmlToPdfClient
 
+username = 'azulgaragarza'
+api_key = '0a52ce0350ddaef647530c4b25d7ac9f'
+client = HtmlToPdfClient(username, api_key) #para poder descargar el pdf
 
 db = SQLAlchemy()
-from modules.classes import *
+from modules.classes_usuarios import *
 app = Flask(__name__)
 app.secret_key = 'my_secret_key'
-#photos = UploadSet('photos', IMAGES) #para subir fotos
-#app.config['UPLOADED_PHOTOS_DEST'] = 'data'
-#configure_uploads(app, photos)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -30,7 +29,6 @@ with app.app_context():
     db.create_all() #crea la base de datos
 
 admin_list = [1,2,3] 
-
 
 def is_admin():
         if current_user.is_authenticated and current_user.id in admin_list:
@@ -115,10 +113,9 @@ def crear_reclamo():
     if request.method == 'POST': #and 'photo' in request.files:
         asunto = request.form['asunto']
         desc_reclamo = request.form['reclamo']
+        imagen = request.files['imagen']
+        print("imagen: ",imagen.filename)
         
-        #file = request.files['imagen']
-        #data = file.read()
-
         # Buscar reclamos similares en la base de datos
         reclamos_similares = Reclamo.query.filter(
             or_(
@@ -127,9 +124,15 @@ def crear_reclamo():
             )
         ).all()
         if reclamos_similares:
+            if imagen:
+                flash("No puedes agregar una foto cuando te adhieres a otro reclamo")
             return render_template('adherirse_reclamo.html', reclamos=reclamos_similares)
         else:
             current_user.crear_reclamo(asunto, desc_reclamo)
+            if imagen is not None and imagen.filename != '':
+                reclamo = Reclamo.query.filter_by(asunto=asunto).first()
+                name = f'data\\reclamo_id_{reclamo.id}.jpg'
+                imagen.save(name)
             flash("Reclamo creado exitosamente.")
     return render_template('crear_reclamo.html')
 
@@ -226,7 +229,7 @@ def analitica():
 @admin_only
 def manejar_reclamo():
     departamentos = Departamento.query.all()
-    departamento = Departamento.query.filter_by(id=current_user.id).first()
+    departamento = Departamento.query.filter_by(jefe=current_user.email).first()
     if current_user.id == 2:
         reclamos = Reclamo.query.all()
     else:
@@ -271,6 +274,31 @@ def generar_reporte():
     if os.path.exists('static\\grafico_palabras_claves.png'):
         os.remove('static\\grafico_palabras_claves.png')
     current_user.generar_graficos()
+    contenido_html = render_template('plantilla_reporte.html', usuario=usuario, departamento=departamento, reclamos=reclamos, reclamos_totales=reclamos_totales, reclamos_resueltos=reclamos_resueltos, reclamos_en_proceso=reclamos_en_proceso, reclamos_invalidos=reclamos_invalidos, reclamos_pendientes=reclamos_pendientes, fecha=fecha)
+
+    if request.method == 'POST':
+        formato = request.form.get('opcion')
+        if formato == 'pdf':
+            with open('templates\\reporte.html', 'w', encoding='utf-8') as file:
+                file.write(contenido_html)
+            client.setDataFile('static\\Logo.png')
+            pdf_content = client.convertFile('templates\\reporte.html')
+            headers = {
+                'Content-Type': 'application/pdf',
+                'Content-Disposition': 'attachment; filename=reporte.pdf'
+            }
+            # Retorna el archivo PDF como una respuesta para su descarga
+            return Response(pdf_content, headers=headers)
+        elif formato == 'html':
+            with open('templates\\reporte.html', 'w', encoding='utf-8') as file:
+                file.write(contenido_html)
+            headers = {
+            'Content-Type': 'text/html',
+            'Content-Disposition': 'attachment; filename=reporte.html'
+            }
+            with open('templates\\reporte.html', 'r', encoding='utf-8') as file:
+                html_content = file.read()
+            return Response(html_content,headers=headers)
     return render_template('generar_reporte.html', usuario=usuario, departamento=departamento, reclamos=reclamos, reclamos_totales=reclamos_totales, reclamos_resueltos=reclamos_resueltos, reclamos_en_proceso=reclamos_en_proceso, reclamos_invalidos=reclamos_invalidos, reclamos_pendientes=reclamos_pendientes, fecha=fecha)
 
 
