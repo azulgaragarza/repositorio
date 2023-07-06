@@ -281,7 +281,6 @@ def generar_reporte():
         if formato == 'pdf':
             with open('templates\\reporte.html', 'w', encoding='utf-8') as file:
                 file.write(contenido_html)
-            client.setDataFile('static\\Logo.png')
             pdf_content = client.convertFile('templates\\reporte.html')
             headers = {
                 'Content-Type': 'application/pdf',

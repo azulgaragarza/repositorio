@@ -1,10 +1,7 @@
 from flask import Flask, render_template, request
 from modules.class_cajon import Cajon
-from modules.class_detector_alimentos import DetectorAlimento
-import random
 
 
-lista_objetos = []
 aw_promedio_kiwi = 0
 aw_promedio_manzana = 0
 aw_promedio_zanahoria = 0

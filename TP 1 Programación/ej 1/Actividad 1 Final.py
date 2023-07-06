@@ -1,19 +1,19 @@
 import matplotlib.pyplot as plt
 import csv
 listaG=[]
-listaN=[]
+listaN=[] 
 
 with open("docs\\google.csv") as f:
     n=csv.reader(f,delimiter=";")
     for i in n:
         listaG.append(i[0].split(","))
-listaG.remove(listaG[0])
+listaG.remove(listaG[0]) #lista de listas que contiene fecha y precio
 
 with open("docs\\nike.csv") as l:
     s=csv.reader(l,delimiter=";")
     for x in s:
         listaN.append(x[0].split(","))
-listaN.remove(listaN[0])
+listaN.remove(listaN[0])  #valores cargados en las listas
 
 #Aca se crean las listas para los ejes (X,Y) (para las gráficas)
 ejeX=[]
@@ -23,12 +23,13 @@ while n<len(listaG):
    n=n+1
 
 listaGY=[]
-listaNY=[]
+listaNY=[] 
 for y in listaG:
     listaGY.append(float(y[1]))
 for z in listaN:
-    listaNY.append(float(z[1]))
-    
+    listaNY.append(float(z[1])) #se pasan a float los precios de la lista N
+
+#valores normalizados
 listaGN=[]
 for i in listaG:
     p= ((float(i[1])-min(listaGY))/(max(listaGY)-min(listaGY)))
@@ -39,6 +40,7 @@ for j in listaN:
     p= ((float(j[1])-min(listaNY))/(max(listaNY)-min(listaNY)))
     listaNN.append(p)
 
+#valores porcentuales de cambio
 listaGP=[]
 for n in listaG:
     p= (((float(n[1])-float(listaG[0][1]))/float(listaG[0][1]))*100)
@@ -48,7 +50,6 @@ listaNP=[]
 for m in listaN:
     p= (((float(m[1])-float(listaN[0][1]))/float(listaN[0][1]))*100)
     listaNP.append(p)
-
 
 
 #Creo una lista que incluya los precios de Google en el primer trimestre (9o dias)
@@ -65,6 +66,7 @@ print("La caida porcentual de Google es de:", round(caidaP, 2), "%")
 #Aca empieza la grafica 1
 plt.plot(ejeX, listaGN, label="Google") 
 plt.plot(ejeX, listaNN, label="Nike")
+plt.title('Precios normalizados entre 0 y 1')
 plt.grid()
 plt.legend()
 

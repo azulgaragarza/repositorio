@@ -6,7 +6,6 @@ from wordcloud import WordCloud
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.probability import FreqDist
-from flask import send_file
 
 from modules.class_reclamo import Reclamo
 from modules.class_departamento import Departamento

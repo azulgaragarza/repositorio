@@ -39,11 +39,25 @@
         display: flex;
         justify-content: center;
         }
+        .mensaje {
+        color: red;
+        }
         </style>
     </head>
     <body style="background-color:paleturquoise">
         <h1 class="centrar_element">Mis reclamos</h1>
         <button onclick="location.href='/pantalla_principal'">Volver</button>
+        <div class="mensaje">
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                <ul class="flash-messages">
+                  {% for message in messages %}
+                    {{ message }}
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            {% endwith %}
+        </div>
         <div class="table-container">
             <table>
                 <tr>

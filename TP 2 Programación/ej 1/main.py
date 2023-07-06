@@ -36,7 +36,7 @@ class Curso():
     def devolver_curso(self):
         print("Nombre del curso:", self.nombre_curso)
         print("Carga horaria:", self.carga_horaria)
-        print("Profesor:", self.profesor_curso)
+        print("Profesor:", self.profesor_curso.nombre)
         print("Alumnos inscriptos:")
         for alumno in self.alumnos:
             print(f"{alumno.nombre}, Dni: {alumno.dni}")
@@ -146,12 +146,15 @@ facultad.asignar_director_depto(profesor2,"Fisica")
 print(f'El director del departamento de Fisica es {facultad.departamentos["Fisica"].director.nombre}')
 print()
 
+#asignar estudiante a curso
 facultad.asignar_estudiante_curso(estudiante1,curso1)
 facultad.asignar_estudiante_curso(estudiante2,curso1)
+
+facultad.asignar_profesor_curso(profesor3,curso1)
 curso1.devolver_curso()
 
-facultad.asignar_profesor_curso(profesor3,curso2)
-print(f'{profesor3.nombre} enseña en:')
-for curso in profesor3.cursos:
+facultad.asignar_profesor_curso(profesor4,curso2)
+print(f'{profesor4.nombre} enseña en:')
+for curso in profesor4.cursos:
     print(curso.nombre_curso)
 
